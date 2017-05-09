@@ -3,6 +3,7 @@
 
 ## 预览图
 UI相对比较丑，用则先，以后再改
+
 ![](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-05-09-10-46-42-680_com.cxb.familytree.png)
 
 ### 后续
