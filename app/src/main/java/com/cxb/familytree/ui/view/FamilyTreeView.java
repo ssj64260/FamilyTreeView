@@ -18,7 +18,6 @@ import com.cxb.familytree.R;
 import com.cxb.familytree.model.FamilyMember;
 import com.cxb.familytree.utils.DisplayUtil;
 import com.cxb.familytree.utils.GlideCircleTransform;
-import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -549,7 +548,7 @@ public class FamilyTreeView extends ViewGroup {
     public boolean onTouchEvent(MotionEvent event) {
         int currentTouchX = (int) event.getX();
         int currentTouchY = (int) event.getY();
-        Logger.d(touchX + "  " + touchY);
+//        Logger.d(touchX + "  " + touchY);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 currentX = getScrollX();
