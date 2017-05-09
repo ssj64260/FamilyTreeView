@@ -1,0 +1,17 @@
+.gradle
+build
+bin
+.idea
+captures
+
+
+*.iml
+*.properties
+*.mk
+*.flags
+*.stackdump
+*.pro
+*.jks
+*.keystore
+
+
