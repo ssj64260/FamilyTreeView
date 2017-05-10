@@ -41,6 +41,8 @@ public class FamilyTreeView extends ViewGroup {
     private int mMaxHeightPX;//最大高度PX
     private int mSpacePX;//元素间距PX
     private int mLineWidthPX;//连线宽度PX
+    private int mLastInterceptX;
+    private int mLastInterceptY;
 
     private FamilyMember mFamilyMember;//我的
     private FamilyMember mMySpouse;//配偶
@@ -643,10 +645,10 @@ public class FamilyTreeView extends ViewGroup {
 //        Logger.d(mTouchX + "  " + mTouchY);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mCurrentX = getScrollX();
-                mCurrentY = getScrollY();
-                mTouchX = (int) event.getX();
-                mTouchY = (int) event.getY();
+//                mCurrentX = getScrollX();
+//                mCurrentY = getScrollY();
+//                mTouchX = (int) event.getX();
+//                mTouchY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 int currentTouchX = (int) event.getX();
@@ -679,5 +681,34 @@ public class FamilyTreeView extends ViewGroup {
                 break;
         }
         return true;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        boolean intercerpt = false;
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastInterceptX = (int) ev.getX();
+                mLastInterceptY = (int) ev.getY();
+                mCurrentX = getScrollX();
+                mCurrentY = getScrollY();
+                mTouchX = (int) ev.getX();
+                mTouchY = (int) ev.getY();
+                intercerpt = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int dx = Math.abs((int) ev.getX() - mLastInterceptX);
+                int dy = Math.abs((int) ev.getY() - mLastInterceptY);
+                if (dx < 1 && dy < 1) {
+                    intercerpt = false;
+                } else {
+                    intercerpt = true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                intercerpt = false;
+                break;
+        }
+        return intercerpt;
     }
 }
