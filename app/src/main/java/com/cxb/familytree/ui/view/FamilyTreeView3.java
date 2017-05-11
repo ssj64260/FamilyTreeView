@@ -183,7 +183,7 @@ public class FamilyTreeView3 extends ViewGroup {
 
         familyView.setTag(family);
         Glide.with(getContext())
-                .load(family.getAvatar())
+                .load(family.getMemberImg())
                 .centerCrop()
                 .transform(new GlideCircleTransform(getContext()))
                 .dontAnimate()

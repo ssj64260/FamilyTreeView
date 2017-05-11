@@ -11,10 +11,10 @@ import java.util.List;
 
 public class FamilyMember implements Parcelable {
 
-    private String id;//人员ID
-    private String name;//姓名
+    private String memberId;//人员ID
+    private String memberName;//姓名
     private String call;//称呼
-    private String avatar;//头像
+    private String memberImg;//头像
 
     private FamilyMember spouse;//配偶
     private FamilyMember father;//父亲
@@ -30,10 +30,10 @@ public class FamilyMember implements Parcelable {
     }
 
     protected FamilyMember(Parcel in) {
-        id = in.readString();
-        name = in.readString();
+        memberId = in.readString();
+        memberName = in.readString();
         call = in.readString();
-        avatar = in.readString();
+        memberImg = in.readString();
         spouse = in.readParcelable(FamilyMember.class.getClassLoader());
         father = in.readParcelable(FamilyMember.class.getClassLoader());
         mother = in.readParcelable(FamilyMember.class.getClassLoader());
@@ -43,10 +43,10 @@ public class FamilyMember implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
+        dest.writeString(memberId);
+        dest.writeString(memberName);
         dest.writeString(call);
-        dest.writeString(avatar);
+        dest.writeString(memberImg);
         dest.writeParcelable(spouse, flags);
         dest.writeParcelable(father, flags);
         dest.writeParcelable(mother, flags);
@@ -71,20 +71,20 @@ public class FamilyMember implements Parcelable {
         }
     };
 
-    public String getId() {
-        return id;
+    public String getMemberId() {
+        return memberId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
-    public String getName() {
-        return name;
+    public String getMemberName() {
+        return memberName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 
     public String getCall() {
@@ -95,12 +95,12 @@ public class FamilyMember implements Parcelable {
         this.call = call;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getMemberImg() {
+        return memberImg;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setMemberImg(String memberImg) {
+        this.memberImg = memberImg;
     }
 
     public FamilyMember getSpouse() {
