@@ -654,24 +654,27 @@ public class FamilyTreeView extends ViewGroup {
                 int currentTouchX = (int) event.getX();
                 int currentTouchY = (int) event.getY();
 
-                int dx = mTouchX - currentTouchX;
-                int dy = mTouchY - currentTouchY;
+                int dx = currentTouchX - mTouchX;
+                int dy = currentTouchY - mTouchY;
 
-                mCurrentX += dx;
-                mCurrentY += dy;
+                mCurrentX -= dx;
+                mCurrentY -= dy;
 
-                if (mCurrentX < 0) {
-                    mCurrentX = 0;
+                int minMoveX = -mScreenWidth;
+                int minMoveY = -mScreenHeight;
+
+                if (mCurrentX < minMoveX) {
+                    mCurrentX = minMoveX;
+                } else if (mCurrentX > mMaxWidthPX) {
+                    mCurrentX = mMaxWidthPX;
                 }
-                if (mCurrentY < 0) {
-                    mCurrentY = 0;
+
+                if (mCurrentY < minMoveY) {
+                    mCurrentY = minMoveY;
+                } else if (mCurrentY > mMaxHeightPX) {
+                    mCurrentY = mMaxHeightPX;
                 }
-                if (mCurrentX > mMaxWidthPX - mScreenWidth) {
-                    mCurrentX = mMaxWidthPX - mScreenWidth;
-                }
-                if (mCurrentY > mMaxHeightPX - mScreenHeight) {
-                    mCurrentY = mMaxHeightPX - mScreenHeight;
-                }
+
                 this.scrollTo(mCurrentX, mCurrentY);
                 mTouchX = currentTouchX;
                 mTouchY = currentTouchY;
