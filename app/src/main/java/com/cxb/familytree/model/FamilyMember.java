@@ -19,6 +19,9 @@ public class FamilyMember implements Parcelable {
     private FamilyMember spouse;//配偶
     private FamilyMember father;//父亲
     private FamilyMember mother;//母亲
+    private FamilyMember fosterFather;//养父
+    private FamilyMember fosterMother;//养母
+
     private List<FamilyMember> brothers;//兄弟姐妹
     private List<FamilyMember> children;//儿女
 
@@ -37,6 +40,8 @@ public class FamilyMember implements Parcelable {
         spouse = in.readParcelable(FamilyMember.class.getClassLoader());
         father = in.readParcelable(FamilyMember.class.getClassLoader());
         mother = in.readParcelable(FamilyMember.class.getClassLoader());
+        fosterFather = in.readParcelable(FamilyMember.class.getClassLoader());
+        fosterMother = in.readParcelable(FamilyMember.class.getClassLoader());
         brothers = in.createTypedArrayList(FamilyMember.CREATOR);
         children = in.createTypedArrayList(FamilyMember.CREATOR);
     }
@@ -50,6 +55,8 @@ public class FamilyMember implements Parcelable {
         dest.writeParcelable(spouse, flags);
         dest.writeParcelable(father, flags);
         dest.writeParcelable(mother, flags);
+        dest.writeParcelable(fosterFather, flags);
+        dest.writeParcelable(fosterMother, flags);
         dest.writeTypedList(brothers);
         dest.writeTypedList(children);
     }
@@ -125,6 +132,22 @@ public class FamilyMember implements Parcelable {
 
     public void setMother(FamilyMember mother) {
         this.mother = mother;
+    }
+
+    public FamilyMember getFosterFather() {
+        return fosterFather;
+    }
+
+    public void setFosterFather(FamilyMember fosterFather) {
+        this.fosterFather = fosterFather;
+    }
+
+    public FamilyMember getFosterMother() {
+        return fosterMother;
+    }
+
+    public void setFosterMother(FamilyMember fosterMother) {
+        this.fosterMother = fosterMother;
     }
 
     public List<FamilyMember> getBrothers() {

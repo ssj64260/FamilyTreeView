@@ -41,6 +41,8 @@ public class MainActivity extends Activity {
         mFamilyMember.setChildren(getChildrenData());
         mFamilyMember.setFather(getFatherData());
         mFamilyMember.setMother(getMotherData());
+        mFamilyMember.setFosterFather(getFosterFatherData());
+        mFamilyMember.setFosterMother(getFosterMotherData());
 
         Gson gson = new Gson();
         Logger.json(gson.toJson(mFamilyMember));
@@ -315,12 +317,38 @@ public class MainActivity extends Activity {
         return mother;
     }
 
+    private FamilyMember getFosterFatherData() {
+        String FOSTERFATHER = "养父";
+        String fosterFatherId = "203";
+        String fosterFatherAvater = "http://i2.sinaimg.cn/ent/2011/0617/U4099P28DT20110617142147.jpg";
+        String fosterFatherName = "艾德·史塔克";
+        FamilyMember fosterFather = new FamilyMember();
+        fosterFather.setMemberId(fosterFatherId);
+        fosterFather.setMemberImg(fosterFatherAvater);
+        fosterFather.setMemberName(fosterFatherName);
+        fosterFather.setCall(FOSTERFATHER);
+        return fosterFather;
+    }
+
+    private FamilyMember getFosterMotherData() {
+        String FOSTERMOTHER = "养母";
+        String fosterMotherId = "204";
+        String fosterMotherAvater = "http://a4.att.hudong.com/71/34/01300542899749141759349066580.jpg";
+        String fosterMotherName = "凯瑟琳·徒利·史塔克";
+        FamilyMember fosterMother = new FamilyMember();
+        fosterMother.setMemberId(fosterMotherId);
+        fosterMother.setMemberImg(fosterMotherAvater);
+        fosterMother.setMemberName(fosterMotherName);
+        fosterMother.setCall(FOSTERMOTHER);
+        return fosterMother;
+    }
+
     private void initView() {
         ftvTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
     }
 
     private void setData() {
-        ftvTree.setmFamilyMember(mFamilyMember);
+        ftvTree.setFamilyMember(mFamilyMember);
         ftvTree.setmOnFamilySelectListener(new FamilyTreeView.OnFamilySelectListener() {
             @Override
             public void onFamilySelect(FamilyMember family) {
