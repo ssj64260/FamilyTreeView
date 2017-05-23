@@ -318,6 +318,26 @@ public class MainActivity extends Activity {
     }
 
     private FamilyMember getFosterFatherData() {
+        String PATERNALGRANDFATHER = "（养）爷爷";
+        String fGrandPaId = "105";
+        String fGrandPaAvater = "http://img1.cache.netease.com/catchpic/C/CB/CBA11F1580A1BE8B174B36E7F810CE1F.jpg";
+        String fGrandPaName = "强森";
+        FamilyMember fGrandPa = new FamilyMember();
+        fGrandPa.setMemberId(fGrandPaId);
+        fGrandPa.setMemberImg(fGrandPaAvater);
+        fGrandPa.setMemberName(fGrandPaName);
+        fGrandPa.setCall(PATERNALGRANDFATHER);
+
+        String PATERNALGRANDMOTHER = "（养）奶奶";
+        String fGrandMaId = "106";
+        String fGrandMaAvater = "http://img3.duitang.com/uploads/item/201606/19/20160619163933_EfKMX.png";
+        String fGrandMaName = "丹尼莉丝·坦格利安";
+        FamilyMember fGrandMa = new FamilyMember();
+        fGrandMa.setMemberId(fGrandMaId);
+        fGrandMa.setMemberImg(fGrandMaAvater);
+        fGrandMa.setMemberName(fGrandMaName);
+        fGrandMa.setCall(PATERNALGRANDMOTHER);
+
         String FOSTERFATHER = "养父";
         String fosterFatherId = "203";
         String fosterFatherAvater = "http://i2.sinaimg.cn/ent/2011/0617/U4099P28DT20110617142147.jpg";
@@ -327,10 +347,32 @@ public class MainActivity extends Activity {
         fosterFather.setMemberImg(fosterFatherAvater);
         fosterFather.setMemberName(fosterFatherName);
         fosterFather.setCall(FOSTERFATHER);
+        fosterFather.setFather(fGrandPa);
+        fosterFather.setMother(fGrandMa);
         return fosterFather;
     }
 
     private FamilyMember getFosterMotherData() {
+        String MATERNALGRANDFATHER = "（养）外公";
+        String mGrandPaId = "107";
+        String mGrandPaAvater = "http://a0.att.hudong.com/22/20/01300542735711144075202548878_s.jpg";
+        String mGrandPaName = "詹姆·兰尼斯特";
+        FamilyMember mGrandPa = new FamilyMember();
+        mGrandPa.setMemberId(mGrandPaId);
+        mGrandPa.setMemberImg(mGrandPaAvater);
+        mGrandPa.setMemberName(mGrandPaName);
+        mGrandPa.setCall(MATERNALGRANDFATHER);
+
+        String MATERNALGRANDMOTHER = "（养）外婆";
+        String mGradnMaId = "108";
+        String mGrandMaAvater = "http://img003.21cnimg.com/photos/album/20141211/m600/7C0FDC909057A2795A2781CE0AEB2DAC.jpeg";
+        String mGrandMaName = "珊莎·史塔克";
+        FamilyMember mGrandMa = new FamilyMember();
+        mGrandMa.setMemberId(mGradnMaId);
+        mGrandMa.setMemberImg(mGrandMaAvater);
+        mGrandMa.setMemberName(mGrandMaName);
+        mGrandMa.setCall(MATERNALGRANDMOTHER);
+
         String FOSTERMOTHER = "养母";
         String fosterMotherId = "204";
         String fosterMotherAvater = "http://a4.att.hudong.com/71/34/01300542899749141759349066580.jpg";
@@ -340,6 +382,8 @@ public class MainActivity extends Activity {
         fosterMother.setMemberImg(fosterMotherAvater);
         fosterMother.setMemberName(fosterMotherName);
         fosterMother.setCall(FOSTERMOTHER);
+        fosterMother.setFather(mGrandPa);
+        fosterMother.setMother(mGrandMa);
         return fosterMother;
     }
 
