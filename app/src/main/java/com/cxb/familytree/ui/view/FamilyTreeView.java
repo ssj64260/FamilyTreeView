@@ -29,7 +29,8 @@ import java.util.List;
 
 public class FamilyTreeView extends ViewGroup {
 
-    private static final int MAX_HEIGHT_DP = 750;//最大高度为750dp
+    private static final int MAX_HEIGHT_DP = 850;//最大高度为850dp
+    private static final int MINE_TOP_DP = 350;//选中成员Y坐标350DP
     private static final int SPACE_WIDTH_DP = 50;//间距为50dp
     private static final int ITEM_WIDTH_DP = 60;//家庭成员View宽度60dp
     private static final int ITEM_HEIGHT_DP = 100;//家庭成员View高度100dp
@@ -408,7 +409,7 @@ public class FamilyTreeView extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if (mMineView != null) {
             int mineLeft = mMaxWidthPX / 2 - mItemWidthPX / 2;
-            int mineTop = mMaxHeightPX / 2 - mItemHeightPX / 2;
+            int mineTop = DisplayUtil.dip2px(MINE_TOP_DP);
 
             setChildViewFrame(mMineView, mineLeft, mineTop, mItemWidthPX, mItemHeightPX);
 
@@ -418,7 +419,7 @@ public class FamilyTreeView extends ViewGroup {
                         mItemWidthPX, mItemHeightPX);
             }
 
-            int parentTop = mineTop - mSpacePX - mItemHeightPX;
+            int parentTop = mineTop - mSpacePX * 2 - mItemHeightPX;
             int grandParentTop = parentTop - mSpacePX - mItemHeightPX;
 
             int fosterFatherLeft = mineLeft;
@@ -474,7 +475,7 @@ public class FamilyTreeView extends ViewGroup {
             }
 
             if (mGrandChildrenView != null && mGrandChildrenView.size() > 0) {
-                int grandChildrenTop = mineTop + (mItemHeightPX + mSpacePX) * 2;
+                int grandChildrenTop = mineTop + (mItemHeightPX + mSpacePX * 2) * 2;
                 int grandChildrenLeft = mineLeft + mItemWidthPX / 2 - mGrandChildrenMaxWidth / 2;
 
 //                int grandChildrenCount = mGrandChildrenView.size();
@@ -483,7 +484,7 @@ public class FamilyTreeView extends ViewGroup {
                 for (int i = 0; i < mMyChildren.size(); i++) {
                     View childView = mChildrenView.get(i);
                     int childLeft = grandChildrenLeft;
-                    int childTop = mineTop + mItemHeightPX + mSpacePX;
+                    int childTop = mineTop + mItemHeightPX + mSpacePX * 2;
 
                     FamilyMember myChild = mMyChildren.get(i);
                     List<FamilyMember> myGrandChildren = myChild.getChildren();
@@ -576,7 +577,7 @@ public class FamilyTreeView extends ViewGroup {
         int fosterParentCenterX = mineX + mItemWidthPX / 2;
         int parentCenterX = mineX + mItemWidthPX / 2;
 
-        int horizontalLineY = mineY - mSpacePX / 2;
+        int horizontalLineY = mineY - mSpacePX;
 
         if (haveEitherFosterParent() || haveEitherParent()) {
             int verticalLineX = mineX + mItemWidthPX / 2;
@@ -685,49 +686,64 @@ public class FamilyTreeView extends ViewGroup {
 
     private void drawChildrenLine(Canvas canvas) {
         if (mMyChildren != null && mMyChildren.size() > 0) {
-            int verticalLineX = (int) mMineView.getX() + mItemWidthPX / 2;
-            int verticalLineStartY = (int) mMineView.getY() + mItemHeightPX;
-            int verticalLinesStopY = verticalLineStartY + mSpacePX + mItemWidthPX / 2;
+            int myVerticalLineX = (int) mMineView.getX() + mItemWidthPX / 2;
+            int myVerticalLineStartY = (int) mMineView.getY() + mItemHeightPX;
+            int myVerticalLinesStopY = myVerticalLineStartY + mSpacePX;
             mPath.reset();
-            mPath.moveTo(verticalLineX, verticalLineStartY);
-            mPath.lineTo(verticalLineX, verticalLinesStopY);
+            mPath.moveTo(myVerticalLineX, myVerticalLineStartY);
+            mPath.lineTo(myVerticalLineX, myVerticalLinesStopY);
             canvas.drawPath(mPath, mPaint);
 
             int index = 0;
             int childrenViewCount = mChildrenView.size();
             for (int i = 0; i < childrenViewCount; i++) {
                 View startChildView = mChildrenView.get(i);
+                int childLineY = (int) startChildView.getY() - mSpacePX;
+                int childVerticalLineEndY = (int) startChildView.getY();
+                int childLineStartX = (int) startChildView.getX() + mItemWidthPX / 2;
+                mPath.reset();
+                mPath.moveTo(childLineStartX, childLineY);
+                mPath.lineTo(childLineStartX, childVerticalLineEndY);
+                canvas.drawPath(mPath, mPaint);
+
                 if (i < childrenViewCount - 1) {
                     View endChildView = mChildrenView.get(i + 1);
-                    int horizontalLineStartX = (int) startChildView.getX() + mItemWidthPX;
-                    int horizontalLineStopX = (int) endChildView.getX();
-                    int horizontalLineY = (int) startChildView.getY() + mItemWidthPX / 2;
+                    int horizontalLineStopX = (int) endChildView.getX() + mItemWidthPX / 2;
                     mPath.reset();
-                    mPath.moveTo(horizontalLineStartX, horizontalLineY);
-                    mPath.lineTo(horizontalLineStopX, horizontalLineY);
+                    mPath.moveTo(childLineStartX, childLineY);
+                    mPath.lineTo(horizontalLineStopX, childLineY);
                     canvas.drawPath(mPath, mPaint);
                 }
 
                 List<FamilyMember> grandChildren = mMyChildren.get(i).getChildren();
                 if (grandChildren != null) {
                     int grandChildrenCount = grandChildren.size();
-                    for (int j = 0; j < grandChildrenCount - 1; j++) {
+                    for (int j = 0; j < grandChildrenCount; j++) {
                         View startView = mGrandChildrenView.get(j + index);
-                        View endView = mGrandChildrenView.get(j + 1 + index);
-                        int hLineStartX = (int) startView.getX() + mItemWidthPX;
-                        int hLineY = (int) startView.getY() + mItemWidthPX / 2;
-                        int hLineStopX = (int) endView.getX();
+                        int grandchildLineX = (int) startView.getX() + mItemWidthPX / 2;
+                        int grandchildLineStartY = (int) startView.getY() - mSpacePX;
+                        int garndchildLineEndY = (int) startView.getY();
                         mPath.reset();
-                        mPath.moveTo(hLineStartX, hLineY);
-                        mPath.lineTo(hLineStopX, hLineY);
+                        mPath.moveTo(grandchildLineX, grandchildLineStartY);
+                        mPath.lineTo(grandchildLineX, garndchildLineEndY);
                         canvas.drawPath(mPath, mPaint);
+
+
+                        if (j < grandChildrenCount - 1) {
+                            View endView = mGrandChildrenView.get(j + 1 + index);
+                            int hLineStopX = (int) endView.getX() + mItemWidthPX / 2;
+                            mPath.reset();
+                            mPath.moveTo(grandchildLineX, grandchildLineStartY);
+                            mPath.lineTo(hLineStopX, grandchildLineStartY);
+                            canvas.drawPath(mPath, mPaint);
+                        }
                     }
 
                     if (grandChildrenCount > 0) {
                         View grandChildView = mGrandChildrenView.get(index);
                         int vLineX = (int) startChildView.getX() + mItemWidthPX / 2;
                         int vLineStopY = (int) startChildView.getY() + mItemHeightPX;
-                        int hLineY = (int) grandChildView.getY() + mItemWidthPX / 2;
+                        int hLineY = (int) grandChildView.getY() - mSpacePX;
                         mPath.reset();
                         mPath.moveTo(vLineX, hLineY);
                         mPath.lineTo(vLineX, vLineStopY);
