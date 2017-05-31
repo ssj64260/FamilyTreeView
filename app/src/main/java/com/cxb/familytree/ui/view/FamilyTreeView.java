@@ -192,15 +192,20 @@ public class FamilyTreeView extends ViewGroup {
                 FamilyMember child = mMyChildren.get(i);
                 List<FamilyMember> grandChildrenList = child.getChildren();
 
-                int grandchildWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
+                int grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
                 if (child.getSpouse() != null) {
-                    grandchildWidthDP += ITEM_WIDTH_DP + SPACE_WIDTH_DP;
+                    grandchildMaxWidthDP += ITEM_WIDTH_DP + SPACE_WIDTH_DP;
                 }
 
                 if (grandChildrenList != null && grandChildrenList.size() > 0) {
-                    grandchildWidthDP = Math.max(grandchildWidthDP, (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandChildrenList.size());
+                    int grandchildCount = grandChildrenList.size();
+                    if (grandchildCount == 2 && child.getSpouse() != null) {
+                        grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * 5 / 2;
+                    } else {
+                        grandchildMaxWidthDP = Math.max(grandchildMaxWidthDP, (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandchildCount);
+                    }
                 }
-                widthDP[4] += grandchildWidthDP;
+                widthDP[4] += grandchildMaxWidthDP;
             }
             widthDP[4] -= SPACE_WIDTH_DP;
             mGrandChildrenMaxWidth = DisplayUtil.dip2px(widthDP[4]);
