@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context="com.cxb.familytree.ui.MainActivity">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_change_type"
+        android:id="@+id/tv_not_foster_parent"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:background="#3C3C3C"
         android:gravity="center"
         android:text="没有养父母"
         android:textColor="#ffffff"
         android:textSize="16sp" />
 
-    <com.cxb.familytree.ui.view.FamilyTreeView
-        android:id="@+id/ftv_tree"
+    <TextView
+        android:id="@+id/tv_have_foster_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff" />
-
-    <com.cxb.familytree.ui.view.FamilyTreeView2
-        android:id="@+id/ftv_tree2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:visibility="gone" />
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:background="#3C3C3C"
+        android:gravity="center"
+        android:text="有养父母"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
 
 </LinearLayout>
