@@ -74,7 +74,9 @@ public class FamilyLiteOrm {
         List<FamilyMember> children = getFamiliesByParentId(parentId, parentId, parentId);
         for (FamilyMember child : children) {
             String childId = child.getMemberId();
+            String childSpouseId = child.getSpouseId();
 
+            child.setSpouse(getFamilyById(childSpouseId));
             child.setChildren(getFamiliesByParentId(childId, childId, childId));
         }
 
