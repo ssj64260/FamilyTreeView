@@ -8,10 +8,28 @@
     android:orientation="vertical"
     tools:context="com.cxb.familytree.ui.MainActivity">
 
+    <TextView
+        android:id="@+id/tv_change_type"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:background="#3C3C3C"
+        android:gravity="center"
+        android:text="没有养父母"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
     <com.cxb.familytree.ui.view.FamilyTreeView
         android:id="@+id/ftv_tree"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff" />
+
+    <com.cxb.familytree.ui.view.FamilyTreeView2
+        android:id="@+id/ftv_tree2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:visibility="gone" />
 
 </LinearLayout>

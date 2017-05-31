@@ -2,11 +2,15 @@ package com.cxb.familytree.ui;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.cxb.familytree.R;
 import com.cxb.familytree.db.FamilyLiteOrm;
+import com.cxb.familytree.interfaces.OnFamilySelectListener;
 import com.cxb.familytree.model.FamilyMember;
 import com.cxb.familytree.ui.view.FamilyTreeView;
+import com.cxb.familytree.ui.view.FamilyTreeView2;
 import com.cxb.familytree.utils.AssetsUtil;
 import com.cxb.familytree.utils.ToastMaster;
 import com.google.gson.Gson;
@@ -18,11 +22,13 @@ public class MainActivity extends BaseActivity {
 
     private static final String MY_FAMILY_ID = "601";
 
-    private FamilyTreeView ftvTree;
-
-    private FamilyMember mFamilyMember;
+    private TextView tvChangeType;
+    private FamilyTreeView ftvTree;//没有养父母
+    private FamilyTreeView2 ftvTree2;//有养父母
 
     private FamilyLiteOrm mDatabase;
+
+    private boolean haveFosterParent = false;//是否有养父母
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,29 +74,57 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
+        tvChangeType = (TextView) findViewById(R.id.tv_change_type);
         ftvTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
+        ftvTree2 = (FamilyTreeView2) findViewById(R.id.ftv_tree2);
     }
 
     private void setData() {
-        mFamilyMember = mDatabase.getFamilyTreeById(MY_FAMILY_ID);
+        tvChangeType.setOnClickListener(click);
+
+        FamilyMember mFamilyMember = mDatabase.getFamilyTreeById(MY_FAMILY_ID);
         if (mFamilyMember != null) {
             ftvTree.setFamilyMember(mFamilyMember);
+            ftvTree2.setFamilyMember(mFamilyMember);
         }
 
-        ftvTree.setmOnFamilySelectListener(new FamilyTreeView.OnFamilySelectListener() {
-            @Override
-            public void onFamilySelect(FamilyMember family) {
-                if (family.isSelect()) {
-                    ToastMaster.toast(family.getMemberName());
-                } else {
-                    String currentFamilyId = family.getMemberId();
-                    FamilyMember currentFamily = mDatabase.getFamilyTreeById(currentFamilyId);
-                    if (currentFamily != null) {
-                        ftvTree.setFamilyMember(currentFamily);
-                    }
+        ftvTree.setOnFamilySelectListener(familySelect);
+        ftvTree2.setOnFamilySelectListener(familySelect);
+    }
+
+    private OnFamilySelectListener familySelect = new OnFamilySelectListener() {
+        @Override
+        public void onFamilySelect(FamilyMember family) {
+            if (family.isSelect()) {
+                ToastMaster.toast(family.getMemberName());
+            } else {
+                String currentFamilyId = family.getMemberId();
+                FamilyMember currentFamily = mDatabase.getFamilyTreeById(currentFamilyId);
+                if (currentFamily != null) {
+                    ftvTree.setFamilyMember(currentFamily);
                 }
             }
-        });
-    }
+        }
+    };
+
+    private View.OnClickListener click = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.tv_change_type:
+                    if (haveFosterParent) {
+                        tvChangeType.setText("没有养父母");
+                        ftvTree.setVisibility(View.VISIBLE);
+                        ftvTree2.setVisibility(View.GONE);
+                    } else {
+                        tvChangeType.setText("有养父母");
+                        ftvTree.setVisibility(View.GONE);
+                        ftvTree2.setVisibility(View.VISIBLE);
+                    }
+                    haveFosterParent = !haveFosterParent;
+                    break;
+            }
+        }
+    };
 
 }
