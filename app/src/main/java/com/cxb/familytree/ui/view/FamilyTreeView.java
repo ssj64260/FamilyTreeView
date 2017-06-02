@@ -407,6 +407,7 @@ public class FamilyTreeView extends ViewGroup {
                         childLeft = (endGrandChildLeft - startGrandChildLeft) / 2 + startGrandChildLeft;
                     } else {
                         childLeft = grandChildrenLeft;
+                        grandChildrenLeft += mSpacePX + mItemWidthPX;
                     }
 
                     setChildViewFrame(myChildView, childLeft, childTop, mItemWidthPX, mItemHeightPX);
@@ -418,11 +419,7 @@ public class FamilyTreeView extends ViewGroup {
                         setChildViewFrame(spouseView, spouseLeft, childTop, mItemWidthPX, mItemHeightPX);
                         childSpouseIndex++;
 
-                        if (myGrandChildren == null || myGrandChildren.size() < 3) {
-                            grandChildrenLeft = spouseLeft + mSpacePX + mItemWidthPX;
-                        }
-                    } else {
-                        grandChildrenLeft += mSpacePX + mItemWidthPX;
+                        grandChildrenLeft = Math.max(grandChildrenLeft, spouseLeft + mSpacePX + mItemWidthPX);
                     }
                 }
             }
