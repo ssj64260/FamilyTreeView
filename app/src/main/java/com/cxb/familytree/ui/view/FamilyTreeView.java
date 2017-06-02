@@ -2,7 +2,6 @@ package com.cxb.familytree.ui.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.TextUtils;
@@ -157,7 +156,7 @@ public class FamilyTreeView extends ViewGroup {
         mPaint.setColor(0xFF888888);
         mPaint.setStrokeWidth(mLineWidthPX);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setPathEffect(new DashPathEffect(new float[]{mLineWidthPX, mLineWidthPX * 4}, 0));
+//        mPaint.setPathEffect(new DashPathEffect(new float[]{mLineWidthPX, mLineWidthPX * 4}, 0));
 
         mPath = new Path();
         mPath.reset();
