@@ -19,9 +19,9 @@
 ## 预览图
 UI相对比较丑，用着先，以后再改
 
-![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-02-23-07-38-209_com.cxb.familytree.png)
+![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-03-00-19-00-163_com.cxb.familytree.png)
 
-![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-02-23-08-04-471_com.cxb.familytree.png)
+![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-03-00-19-08-280_com.cxb.familytree.png)
 
 ![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-02-23-08-34-249_com.cxb.familytree.png)
 
@@ -50,3 +50,5 @@ UI相对比较丑，用着先，以后再改
 	3.2、然后是父母以及祖父母的连线，这里并不难我就不多说了，代码写得很清楚了。
 	3.3、接着就是兄弟姐妹的连线，直接从最左边兄弟的X坐标，练到自己View的X坐标，这里是偷懒的连线方式。(￣▽￣)")
 	3.4、最后就是子女和孙子女的画线，这里也是先连孙子女，把同父母的孙子孙女先连线，然后再连孙子女和子女的线，接着把子女连起来，最后就是我和子女的连线。
+
+#### 4、Github：[https://github.com/ssj64260/FamilyTreeView](https://github.com/ssj64260/FamilyTreeView)
