@@ -541,7 +541,7 @@ public class FamilyTreeView extends ViewGroup {
 
             int horizontalLineStartX = (int) brotherView.getX() + mItemWidthPX / 2;
             int horizontalLineEndX = (int) mMineView.getX() + mItemWidthPX / 2;
-            int horizontalLineY = (int) (brotherView.getY() - mSpacePX);
+            int horizontalLineY = (int) brotherView.getY() - mSpacePX;
             mPath.reset();
             mPath.moveTo(horizontalLineStartX, horizontalLineY);
             mPath.lineTo(horizontalLineEndX, horizontalLineY);

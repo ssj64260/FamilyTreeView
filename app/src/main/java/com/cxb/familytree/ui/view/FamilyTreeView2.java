@@ -25,13 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 家谱树自定义ViewGroup （有养父母）
+ * 家谱树自定义ViewGroup
  */
 
 public class FamilyTreeView2 extends ViewGroup {
 
-    private static final int MAX_HEIGHT_DP = 850;//最大高度为850dp
-    private static final int MINE_TOP_DP = 350;//选中成员Y坐标350DP
+    private static final int MAX_HEIGHT_DP = 900;//最大高度为900dp
     private static final int SPACE_WIDTH_DP = 50;//间距为50dp
     private static final int ITEM_WIDTH_DP = 60;//家庭成员View宽度60dp
     private static final int ITEM_HEIGHT_DP = 100;//家庭成员View高度100dp
@@ -76,6 +75,7 @@ public class FamilyTreeView2 extends ViewGroup {
     private View mMaternalGrandFatherView;//外公View
     private View mMaternalGrandMotherView;//外婆View
     private List<View> mChildrenView;//子女View
+    private List<View> mChildSpouseView;//子女配偶View
     private List<View> mGrandChildrenView;//孙子女View
     private View mFosterFatherView;//养父View
     private View mFosterMotherView;//养母View
@@ -130,12 +130,17 @@ public class FamilyTreeView2 extends ViewGroup {
             mChildrenView.clear();
             mChildrenView = null;
         }
+        if (mChildSpouseView != null) {
+            mChildSpouseView.clear();
+            mChildSpouseView = null;
+        }
         if (mGrandChildrenView != null) {
             mGrandChildrenView.clear();
             mGrandChildrenView = null;
         }
         mBrothersView = new ArrayList<>();
         mChildrenView = new ArrayList<>();
+        mChildSpouseView = new ArrayList<>();
         mGrandChildrenView = new ArrayList<>();
 
         mMySpouse = null;
@@ -190,24 +195,26 @@ public class FamilyTreeView2 extends ViewGroup {
         };
 
         if (mMySpouse != null) {
-            widthDP[2] = ITEM_WIDTH_DP + SPACE_WIDTH_DP + ITEM_WIDTH_DP;
+            widthDP[2] = ITEM_WIDTH_DP + SPACE_WIDTH_DP + ITEM_WIDTH_DP * 2;
         }
-        if (mMyBrothers != null && mMyBrothers.size() > 0) {
+        if (mMyBrothers != null && mMyBrothers.size() > 1) {
             widthDP[2] = ITEM_WIDTH_DP + (SPACE_WIDTH_DP + ITEM_WIDTH_DP) * mMyBrothers.size() * 2;
         }
 
         if (mMyChildren != null) {
             widthDP[3] += (SPACE_WIDTH_DP + ITEM_WIDTH_DP) * mMyChildren.size();
-            int mGrandChildrenCount = 0;
+            widthDP[4] = 0;
             for (int i = 0; i < mMyChildren.size(); i++) {
-                List<FamilyMember> grandChildrenList = mMyChildren.get(i).getChildren();
+                FamilyMember child = mMyChildren.get(i);
+                List<FamilyMember> grandChildrenList = child.getChildren();
+
+                int grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
                 if (grandChildrenList != null && grandChildrenList.size() > 0) {
-                    mGrandChildrenCount += grandChildrenList.size();
-                } else {
-                    mGrandChildrenCount += 1;
+                    grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandChildrenList.size();
                 }
+                widthDP[4] += grandchildMaxWidthDP;
             }
-            widthDP[4] = mGrandChildrenCount * ITEM_WIDTH_DP + SPACE_WIDTH_DP * (mGrandChildrenCount - 1);
+            widthDP[4] -= SPACE_WIDTH_DP;
             mGrandChildrenMaxWidth = DisplayUtil.dip2px(widthDP[4]);
         }
 
@@ -289,6 +296,11 @@ public class FamilyTreeView2 extends ViewGroup {
         if (mMyChildren != null) {
             for (FamilyMember family : mMyChildren) {
                 mChildrenView.add(createFamilyView(family));
+                FamilyMember childSpouse = family.getSpouse();
+                if (childSpouse != null) {
+                    mChildSpouseView.add(createFamilyView(childSpouse));
+                }
+
                 List<FamilyMember> grandChildrens = family.getChildren();
 
                 if (grandChildrens != null && grandChildrens.size() > 0) {
@@ -338,79 +350,21 @@ public class FamilyTreeView2 extends ViewGroup {
         mShowWidthPX = MeasureSpec.getSize(widthMeasureSpec);
         mShowHeightPX = MeasureSpec.getSize(heightMeasureSpec);
 
-        if (mMineView != null) {
-            measureChild(mMineView, mWidthMeasureSpec, mHeightMeasureSpec);
-        }
-        if (mSpouseView != null) {
-            measureChild(mSpouseView, mWidthMeasureSpec, mHeightMeasureSpec);
-        }
-
-        if (mFatherView != null) {
-            measureChild(mFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-
-            if (mPaternalGrandFatherView != null) {
-                measureChild(mPaternalGrandFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-            if (mPaternalGrandMotherView != null) {
-                measureChild(mPaternalGrandMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-        }
-        if (mMotherView != null) {
-            measureChild(mMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-
-            if (mMaternalGrandFatherView != null) {
-                measureChild(mMaternalGrandFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-            if (mMaternalGrandMotherView != null) {
-                measureChild(mMaternalGrandMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-        }
-        if (mFosterFatherView != null) {
-            measureChild(mFosterFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            if (mFPGrandFatherView != null) {
-                measureChild(mFPGrandFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-            if (mFPGrandMotherView != null) {
-                measureChild(mFPGrandMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-        }
-        if (mFosterMotherView != null) {
-            measureChild(mFosterMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            if (mFMGrandFatherView != null) {
-                measureChild(mFMGrandFatherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-            if (mFMGrandMotherView != null) {
-                measureChild(mFMGrandMotherView, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-        }
-
-        if (mBrothersView != null && mBrothersView.size() > 0) {
-            for (View view : mBrothersView) {
-                measureChild(view, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-        }
-
-        if (mChildrenView != null && mChildrenView.size() > 0) {
-            for (View view : mChildrenView) {
-                measureChild(view, mWidthMeasureSpec, mHeightMeasureSpec);
-            }
-
-            if (mGrandChildrenView != null && mGrandChildrenView.size() > 0) {
-                for (View view : mGrandChildrenView) {
-                    measureChild(view, mWidthMeasureSpec, mHeightMeasureSpec);
-                }
-            }
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View childView = getChildAt(i);
+            childView.measure(mWidthMeasureSpec, mHeightMeasureSpec);
         }
 
         setMeasuredDimension(mMaxWidthPX, mMaxHeightPX);
-        scrollTo((mMaxWidthPX - mShowWidthPX) / 2, (mMaxHeightPX - mShowHeightPX) / 2);
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        scrollTo((left + right - mShowWidthPX) / 2, (top + bottom - mShowHeightPX) / 2);
         if (mMineView != null) {
-            int mineLeft = mMaxWidthPX / 2 - mItemWidthPX / 2;
-            int mineTop = DisplayUtil.dip2px(MINE_TOP_DP);
+            int mineLeft = (left + right - mItemWidthPX) / 2;
+            int mineTop = (top + bottom - mItemHeightPX) / 2;
 
             setChildViewFrame(mMineView, mineLeft, mineTop, mItemWidthPX, mItemHeightPX);
 
@@ -421,7 +375,7 @@ public class FamilyTreeView2 extends ViewGroup {
             }
 
             int parentTop = mineTop - mSpacePX * 2 - mItemHeightPX;
-            int grandParentTop = parentTop - mSpacePX - mItemHeightPX;
+            int grandParentTop = parentTop - mSpacePX * 2 - mItemHeightPX;
 
             int fosterFatherLeft = mineLeft;
             int fosterMotherLeft = mineLeft;
@@ -475,51 +429,40 @@ public class FamilyTreeView2 extends ViewGroup {
                 }
             }
 
-            if (mGrandChildrenView != null && mGrandChildrenView.size() > 0) {
-                int grandChildrenTop = mineTop + (mItemHeightPX + mSpacePX * 2) * 2;
-                int grandChildrenLeft = mineLeft + mItemWidthPX / 2 - mGrandChildrenMaxWidth / 2;
+            if (mChildrenView != null && mChildrenView.size() > 0) {
+                int childTop = mineTop + mItemHeightPX + mSpacePX * 2;
+                int childLeft = mineLeft + mItemWidthPX / 2 - mGrandChildrenMaxWidth / 2;
 
-//                int grandChildrenCount = mGrandChildrenView.size();
+                int grandChildrenTop = childTop + mItemHeightPX + mSpacePX * 2;
+                int grandChildrenLeft = childLeft;
 
-                int index = 0;
-                for (int i = 0; i < mMyChildren.size(); i++) {
-                    View childView = mChildrenView.get(i);
-                    int childLeft = grandChildrenLeft;
-                    int childTop = mineTop + mItemHeightPX + mSpacePX * 2;
-
+                int grandchildIndex = 0;
+                int childCount = mChildrenView.size();
+                for (int i = 0; i < childCount; i++) {
+                    View myChildView = mChildrenView.get(i);
                     FamilyMember myChild = mMyChildren.get(i);
                     List<FamilyMember> myGrandChildren = myChild.getChildren();
+
                     if (myGrandChildren != null && myGrandChildren.size() > 0) {
                         int startGrandChildLeft = grandChildrenLeft;
                         int endGrandChildLeft = grandChildrenLeft;
 
                         int myGrandChildrenCount = myGrandChildren.size();
                         for (int j = 0; j < myGrandChildrenCount; j++) {
-                            View grandChildView = mGrandChildrenView.get(index);
+                            View grandChildView = mGrandChildrenView.get(grandchildIndex);
                             setChildViewFrame(grandChildView, grandChildrenLeft, grandChildrenTop, mItemWidthPX, mItemHeightPX);
                             endGrandChildLeft = grandChildrenLeft;
                             grandChildrenLeft += mItemWidthPX + mSpacePX;
-                            index++;
+                            grandchildIndex++;
                         }
 
                         childLeft = (endGrandChildLeft - startGrandChildLeft) / 2 + startGrandChildLeft;
                     } else {
-                        grandChildrenLeft += mItemWidthPX + mSpacePX;
+                        childLeft = grandChildrenLeft;
+                        grandChildrenLeft += mSpacePX + mItemWidthPX;
                     }
 
-                    setChildViewFrame(childView, childLeft, childTop, mItemWidthPX, mItemHeightPX);
-                }
-            } else {
-                if (mMyChildren != null && mMyChildren.size() > 0) {
-                    int childrenCount = mMyChildren.size();
-
-                    int childLeft = (int) mMineView.getX() + mItemWidthPX / 2 - (childrenCount * (mItemWidthPX + mSpacePX) - mSpacePX) / 2;
-                    int childTop = mineTop + mItemHeightPX + mSpacePX * 2;
-
-                    for (View childView : mChildrenView) {
-                        setChildViewFrame(childView, childLeft, childTop, mItemWidthPX, mItemHeightPX);
-                        childLeft += mItemWidthPX + mSpacePX;
-                    }
+                    setChildViewFrame(myChildView, childLeft, childTop, mItemWidthPX, mItemHeightPX);
                 }
             }
         }
@@ -561,8 +504,8 @@ public class FamilyTreeView2 extends ViewGroup {
 
     private void drawSpouseLine(Canvas canvas) {
         if (mSpouseView != null) {
-            int horizontalLineStartX = (int) mMineView.getX() + mMineView.getWidth();
-            int horizontalLineStopX = (int) mSpouseView.getX();
+            int horizontalLineStartX = (int) mMineView.getX() + mItemWidthPX / 2;
+            int horizontalLineStopX = (int) mSpouseView.getX() + mItemWidthPX / 2;
             int horizontalLineY = (int) mSpouseView.getY() + mItemWidthPX / 2;
             mPath.reset();
             mPath.moveTo(horizontalLineStartX, horizontalLineY);
@@ -655,7 +598,13 @@ public class FamilyTreeView2 extends ViewGroup {
     private void drawGrandParentLine(Canvas canvas, View parentView, View grandFatherView, View grandMotherView) {
         int verticalLineX = (int) parentView.getX() + mItemWidthPX / 2;
         int verticalLineStartY = (int) parentView.getY() + mItemWidthPX / 2;
-        int verticalLineEndY = (int) parentView.getY() - mSpacePX - mItemHeightPX + mItemWidthPX / 2;
+        int verticalLineEndY = verticalLineStartY;
+        if (grandFatherView != null) {
+            verticalLineEndY = (int) grandFatherView.getY() + mItemWidthPX / 2;
+        } else if (grandMotherView != null) {
+            verticalLineEndY = (int) grandMotherView.getY() + mItemWidthPX / 2;
+        }
+
         mPath.reset();
         mPath.moveTo(verticalLineX, verticalLineStartY);
         mPath.lineTo(verticalLineX, verticalLineEndY);
@@ -676,11 +625,12 @@ public class FamilyTreeView2 extends ViewGroup {
             int brotherCount = mBrothersView.size();
             View brotherView = mBrothersView.get(brotherCount - 1);
 
-            int horizontalLineStartX = (int) (brotherView.getX() + mItemWidthPX);
-            int horizontalLineY = (int) (brotherView.getY() + mItemWidthPX / 2);
+            int horizontalLineStartX = (int) brotherView.getX() + mItemWidthPX / 2;
+            int horizontalLineEndX = (int) mMineView.getX() + mItemWidthPX / 2;
+            int horizontalLineY = (int) brotherView.getY() + mItemWidthPX / 2;
             mPath.reset();
             mPath.moveTo(horizontalLineStartX, horizontalLineY);
-            mPath.lineTo(mMineView.getX(), horizontalLineY);
+            mPath.lineTo(horizontalLineEndX, horizontalLineY);
             canvas.drawPath(mPath, mPaint);
         }
     }
@@ -696,11 +646,12 @@ public class FamilyTreeView2 extends ViewGroup {
             canvas.drawPath(mPath, mPaint);
 
             int index = 0;
+            int childSpouseIndex = 0;
             int childrenViewCount = mChildrenView.size();
             for (int i = 0; i < childrenViewCount; i++) {
                 View startChildView = mChildrenView.get(i);
                 int childLineY = (int) startChildView.getY() - mSpacePX;
-                int childVerticalLineEndY = (int) startChildView.getY();
+                int childVerticalLineEndY = (int) startChildView.getY() + mItemWidthPX / 2;
                 int childLineStartX = (int) startChildView.getX() + mItemWidthPX / 2;
                 mPath.reset();
                 mPath.moveTo(childLineStartX, childLineY);
@@ -728,7 +679,6 @@ public class FamilyTreeView2 extends ViewGroup {
                         mPath.moveTo(grandchildLineX, grandchildLineStartY);
                         mPath.lineTo(grandchildLineX, garndchildLineEndY);
                         canvas.drawPath(mPath, mPaint);
-
 
                         if (j < grandChildrenCount - 1) {
                             View endView = mGrandChildrenView.get(j + 1 + index);
@@ -819,16 +769,16 @@ public class FamilyTreeView2 extends ViewGroup {
                 mCurrentX -= dx;
                 mCurrentY -= dy;
 
-                if (mCurrentX < 0) {
-                    mCurrentX = 0;
-                } else if (mCurrentX > mMaxWidthPX - mShowWidthPX) {
-                    mCurrentX = mMaxWidthPX - mShowWidthPX;
+                if (mCurrentX < getLeft()) {
+                    mCurrentX = getLeft();
+                } else if (mCurrentX > getRight() - mShowWidthPX) {
+                    mCurrentX = getRight() - mShowWidthPX;
                 }
 
-                if (mCurrentY < 0) {
-                    mCurrentY = 0;
-                } else if (mCurrentY > mMaxHeightPX - mShowHeightPX) {
-                    mCurrentY = mMaxHeightPX - mShowHeightPX;
+                if (mCurrentY < getTop()) {
+                    mCurrentY = getTop();
+                } else if (mCurrentY > getBottom() - mShowHeightPX) {
+                    mCurrentY = getBottom() - mShowHeightPX;
                 }
 
                 this.scrollTo(mCurrentX, mCurrentY);
