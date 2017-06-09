@@ -35,11 +35,13 @@ public class FamilyTreeView2 extends ViewGroup {
     private static final int ITEM_WIDTH_DP = 60;//家庭成员View宽度60dp
     private static final int ITEM_HEIGHT_DP = 100;//家庭成员View高度100dp
     private static final int LINE_WIDTH_DP = 2;//连线宽度2dp
+    private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
 
     private OnFamilySelectListener mOnFamilySelectListener;
 
     private int mScreenWidth;//屏幕宽度PX
     private int mScreenHeight;//屏幕高度PX
+    private int mScrollWidth;//移动范围
 
     private int mItemWidthPX;//家庭成员View宽度PX
     private int mItemHeightPX;//家庭成员View高度PX
@@ -159,6 +161,7 @@ public class FamilyTreeView2 extends ViewGroup {
     private void initData() {
         mScreenWidth = DisplayUtil.getScreenWidth();
         mScreenHeight = DisplayUtil.getScreenHeight();
+        mScrollWidth = DisplayUtil.dip2px(SCROLL_WIDTH);
         mSpacePX = DisplayUtil.dip2px(SPACE_WIDTH_DP);
         mLineWidthPX = DisplayUtil.dip2px(LINE_WIDTH_DP);
         mItemWidthPX = DisplayUtil.dip2px(ITEM_WIDTH_DP);
@@ -808,7 +811,7 @@ public class FamilyTreeView2 extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int dx = Math.abs((int) ev.getX() - mLastInterceptX);
                 int dy = Math.abs((int) ev.getY() - mLastInterceptY);
-                if (dx < 1 && dy < 1) {
+                if (dx < mScrollWidth && dy < mScrollWidth) {
                     intercerpt = false;
                 } else {
                     intercerpt = true;
