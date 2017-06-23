@@ -1,5 +1,5 @@
 # FamilyTreeView
-### 家谱树绘制Demo，主要使用自定义ViewGroup，和使用canvas进行划线，现阶段实现了自己、配偶、兄弟姐妹、父母、祖父母、外祖父母、子女和儿媳妇，女婿以及孙子，共五代的绘制，加入了touch事件可以移动，代码可能写得相对比较死，基本只能使用于家谱展示。还增加了有养父母的控件，其实是拷贝原来的改的（公司项目奇葩需求，这个控件不做维护更新），没有养父母才是正常的关系布局图（这个做更新维护）。
+### 家谱树绘制Demo，主要使用自定义ViewGroup，和使用canvas进行划线，现阶段实现了自己、配偶、兄弟姐妹、父母、祖父母、外祖父母、子女和儿媳妇，女婿以及孙子，共五代的绘制，加入了touch事件可以移动，代码可能写得相对比较死，基本只能使用于家谱展示。还增加了有养父母的控件，其实是拷贝原来的改的。
 
 ## 运行流程
 
@@ -17,13 +17,10 @@
 #### 5、将关系对象交给控件让控件绘制关系图
 
 ## 预览图
-UI相对比较丑，用着先，以后再改
 
-![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-03-00-19-00-163_com.cxb.familytree.png)
+![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/device-2017-06-23-155317.png)
 
-![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-03-00-19-08-280_com.cxb.familytree.png)
-
-![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/Screenshot_2017-06-02-23-08-34-249_com.cxb.familytree.png)
+![静态预览图](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/device-2017-06-23-155343.png)
 
 
 ## 思路说明
