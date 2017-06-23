@@ -220,11 +220,7 @@ public class FamilyTreeView2 extends ViewGroup {
                 final FamilyMember child = mMyChildren.get(i);
                 final List<FamilyMember> grandChildrenList = child.getChildren();
 
-                int grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
-                if (child.getSpouse() != null) {
-                    grandchildMaxWidthDP += ITEM_WIDTH_DP + SPACE_WIDTH_DP;
-                }
-
+                final int grandchildMaxWidthDP;
                 if (grandChildrenList != null && grandChildrenList.size() > 0) {
                     final int grandchildCount = grandChildrenList.size();
                     if (grandchildCount == 1 && mMyChildren.size() == 1) {
@@ -232,7 +228,17 @@ public class FamilyTreeView2 extends ViewGroup {
                     } else if (grandchildCount == 2 && child.getSpouse() != null) {
                         grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * 5 / 2;
                     } else {
-                        grandchildMaxWidthDP = Math.max(grandchildMaxWidthDP, (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandchildCount);
+                        grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandchildCount;
+                    }
+                } else {
+                    if (mMyChildren.size() > 1) {
+                        if (child.getSpouse() != null) {
+                            grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * 2;
+                        } else {
+                            grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
+                        }
+                    } else {
+                        grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
                     }
                 }
                 widthDP[4] += grandchildMaxWidthDP;
