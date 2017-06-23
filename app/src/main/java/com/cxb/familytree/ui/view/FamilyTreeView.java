@@ -29,10 +29,11 @@ import java.util.List;
 
 public class FamilyTreeView extends ViewGroup {
 
-    private static final int MAX_HEIGHT_DP = 900;//最大高度为900dp
-    private static final int SPACE_WIDTH_DP = 50;//间距为50dp
-    private static final int ITEM_WIDTH_DP = 60;//家庭成员View宽度60dp
-    private static final int ITEM_HEIGHT_DP = 100;//家庭成员View高度100dp
+    private static final int MAX_HEIGHT_DP = 590;//最大高度为590dp
+    private static final int SPACE_WIDTH_DP = 20;//间距为25dp
+    private static final int ITEM_WIDTH_DP = 50;//家庭成员View宽度50dp
+    private static final int ITEM_HEIGHT_DP = 70;//家庭成员View高度70dp
+    private static final float TEXT_SIZE_SP = 12f;//文字大小12sp
     private static final int LINE_WIDTH_DP = 2;//连线宽度2dp
     private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
 
@@ -87,6 +88,11 @@ public class FamilyTreeView extends ViewGroup {
     private int mTouchX;//触摸点的X坐标
     private int mTouchY;//触摸点的Y坐标
 
+    private int mCurrentLeft = 0;//当前选中View的Left距离
+    private int mCurrentTop = 0;//当前选中View的Top距离
+    private int mCurrentScrollX = 0;//当前滚动位置
+    private int mCurrentScrollY = 0;//当前滚动位置
+
     public FamilyTreeView(Context context) {
         this(context, null, 0);
     }
@@ -109,26 +115,27 @@ public class FamilyTreeView extends ViewGroup {
         mPaternalGrandMotherView = null;
         mMaternalGrandFatherView = null;
         mMaternalGrandMotherView = null;
+
         if (mBrothersView != null) {
             mBrothersView.clear();
-            mBrothersView = null;
+        } else {
+            mBrothersView = new ArrayList<>();
         }
         if (mChildrenView != null) {
             mChildrenView.clear();
-            mChildrenView = null;
+        } else {
+            mChildrenView = new ArrayList<>();
         }
         if (mChildSpouseView != null) {
             mChildSpouseView.clear();
-            mChildSpouseView = null;
+        } else {
+            mChildSpouseView = new ArrayList<>();
         }
         if (mGrandChildrenView != null) {
             mGrandChildrenView.clear();
-            mGrandChildrenView = null;
+        } else {
+            mGrandChildrenView = new ArrayList<>();
         }
-        mBrothersView = new ArrayList<>();
-        mChildrenView = new ArrayList<>();
-        mChildSpouseView = new ArrayList<>();
-        mGrandChildrenView = new ArrayList<>();
 
         mMySpouse = null;
         mMyFather = null;
@@ -201,7 +208,9 @@ public class FamilyTreeView extends ViewGroup {
 
                 if (grandChildrenList != null && grandChildrenList.size() > 0) {
                     int grandchildCount = grandChildrenList.size();
-                    if (grandchildCount == 2 && child.getSpouse() != null) {
+                    if (grandchildCount == 1 && mMyChildren.size() == 1) {
+                        grandchildMaxWidthDP = ITEM_WIDTH_DP + SPACE_WIDTH_DP;
+                    } else if (grandchildCount == 2 && child.getSpouse() != null) {
                         grandchildMaxWidthDP = (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * 5 / 2;
                     } else {
                         grandchildMaxWidthDP = Math.max(grandchildMaxWidthDP, (ITEM_WIDTH_DP + SPACE_WIDTH_DP) * grandchildCount);
@@ -292,6 +301,7 @@ public class FamilyTreeView extends ViewGroup {
 
         TextView tvCall = (TextView) familyView.findViewById(R.id.tv_call);
         tvCall.getLayoutParams().height = mItemHeightPX - mItemWidthPX;
+        tvCall.setTextSize(TEXT_SIZE_SP);
 
         familyView.setTag(family);
         String url = family.getMemberImg();
@@ -331,10 +341,21 @@ public class FamilyTreeView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        scrollTo((left + right - mShowWidthPX) / 2, (top + bottom - mShowHeightPX) / 2);
+        if (mCurrentScrollX == 0 && mCurrentScrollY == 0) {
+            scrollTo((left + right - mShowWidthPX) / 2, (top + bottom - mShowHeightPX) / 2);
+        } else {
+            scrollTo(mCurrentScrollX, mCurrentScrollY);
+        }
         if (mMineView != null) {
-            int mineLeft = (left + right - mItemWidthPX) / 2;
-            int mineTop = (top + bottom - mItemHeightPX) / 2;
+            final int mineLeft;
+            final int mineTop;
+            if (mCurrentLeft == 0 && mCurrentTop == 0) {
+                mineLeft = (left + right - mItemWidthPX) / 2;
+                mineTop = (top + bottom - mItemHeightPX) / 2;
+            } else {
+                mineLeft = mCurrentLeft;
+                mineTop = mCurrentTop;
+            }
 
             setChildViewFrame(mMineView, mineLeft, mineTop, mItemWidthPX, mItemHeightPX);
 
@@ -432,8 +453,8 @@ public class FamilyTreeView extends ViewGroup {
         int grandFatherLeft = defaultLeft;
         int grandMotherLeft = defaultLeft;
         if (grandFatherView != null && grandMotherView != null) {
-            grandFatherLeft -= mSpacePX;
-            grandMotherLeft += mSpacePX;
+            grandFatherLeft -= mItemWidthPX * 2 / 3;
+            grandMotherLeft += mItemWidthPX * 2 / 3;
         }
 
         if (grandFatherView != null) {
@@ -672,6 +693,10 @@ public class FamilyTreeView extends ViewGroup {
         @Override
         public void onClick(View v) {
             if (mOnFamilySelectListener != null) {
+                mCurrentLeft = v.getLeft();
+                mCurrentTop = v.getTop();
+                mCurrentScrollX = getScrollX();
+                mCurrentScrollY = getScrollY();
                 mOnFamilySelectListener.onFamilySelect((FamilyMember) v.getTag());
             }
         }
@@ -696,17 +721,17 @@ public class FamilyTreeView extends ViewGroup {
                 mCurrentX -= dx;
                 mCurrentY -= dy;
 
-                if (mCurrentX < getLeft()) {
-                    mCurrentX = getLeft();
-                } else if (mCurrentX > getRight() - mShowWidthPX) {
-                    mCurrentX = getRight() - mShowWidthPX;
-                }
-
-                if (mCurrentY < getTop()) {
-                    mCurrentY = getTop();
-                } else if (mCurrentY > getBottom() - mShowHeightPX) {
-                    mCurrentY = getBottom() - mShowHeightPX;
-                }
+//                if (mCurrentX < getLeft()) {
+//                    mCurrentX = getLeft();
+//                } else if (mCurrentX > getRight() - mShowWidthPX) {
+//                    mCurrentX = getRight() - mShowWidthPX;
+//                }
+//
+//                if (mCurrentY < getTop()) {
+//                    mCurrentY = getTop();
+//                } else if (mCurrentY > getBottom() - mShowHeightPX) {
+//                    mCurrentY = getBottom() - mShowHeightPX;
+//                }
 
                 this.scrollTo(mCurrentX, mCurrentY);
                 mTouchX = currentTouchX;
