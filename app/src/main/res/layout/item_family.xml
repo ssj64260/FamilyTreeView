@@ -13,19 +13,31 @@
         android:id="@+id/iv_avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="60dp"
         android:minHeight="60dp"
+        android:minWidth="60dp"
         android:padding="2dp"
         android:src="@drawable/family_avatar"
         tools:background="@drawable/ic_avatar_background" />
 
     <TextView
-        android:id="@+id/tv_call"
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="25dp"
+        android:ellipsize="end"
         android:gravity="center"
+        android:maxLines="1"
         android:textColor="#0c0c0c"
         android:textSize="14sp"
-        tools:text="配偶配偶\n（养）" />
+        tools:text="囧恩" />
+
+    <TextView
+        android:id="@+id/tv_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="#0c0c0c"
+        android:textSize="12sp"
+        tools:text="配偶配偶" />
 
 </LinearLayout>

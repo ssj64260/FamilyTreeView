@@ -30,10 +30,11 @@ import java.util.List;
 public class FamilyTreeView extends ViewGroup {
 
     private static final int MAX_HEIGHT_DP = 590;//最大高度为590dp
-    private static final int SPACE_WIDTH_DP = 20;//间距为25dp
+    private static final int SPACE_WIDTH_DP = 20;//间距为20dp
     private static final int ITEM_WIDTH_DP = 50;//家庭成员View宽度50dp
-    private static final int ITEM_HEIGHT_DP = 70;//家庭成员View高度70dp
-    private static final float TEXT_SIZE_SP = 12f;//文字大小12sp
+    private static final int ITEM_HEIGHT_DP = 80;//家庭成员View高度80dp
+    private static final float CALL_TEXT_SIZE_SP = 9f;//称呼文字大小9sp
+    private static final float NAME_TEXT_SIZE_SP = 11f;//名称文字大小11sp
     private static final int LINE_WIDTH_DP = 2;//连线宽度2dp
     private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
 
@@ -300,8 +301,14 @@ public class FamilyTreeView extends ViewGroup {
         ivAvatar.getLayoutParams().height = mItemWidthPX;
 
         TextView tvCall = (TextView) familyView.findViewById(R.id.tv_call);
-        tvCall.getLayoutParams().height = mItemHeightPX - mItemWidthPX;
-        tvCall.setTextSize(TEXT_SIZE_SP);
+        tvCall.getLayoutParams().height = (mItemHeightPX - mItemWidthPX) / 2;
+        tvCall.setTextSize(CALL_TEXT_SIZE_SP);
+        tvCall.setText("(" + family.getCall() + ")");
+
+        TextView tvName = (TextView) familyView.findViewById(R.id.tv_name);
+        tvName.getLayoutParams().height = (mItemHeightPX - mItemWidthPX) / 2;
+        tvName.setTextSize(NAME_TEXT_SIZE_SP);
+        tvName.setText(family.getMemberName());
 
         familyView.setTag(family);
         String url = family.getMemberImg();
@@ -318,7 +325,7 @@ public class FamilyTreeView extends ViewGroup {
         if (family.isSelect()) {
             ivAvatar.setBackgroundResource(R.drawable.ic_avatar_background);
         }
-        tvCall.setText(family.getCall());
+
         familyView.setOnClickListener(click);
 
         this.addView(familyView);
