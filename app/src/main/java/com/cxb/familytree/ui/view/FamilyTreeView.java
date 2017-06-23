@@ -86,8 +86,8 @@ public class FamilyTreeView extends ViewGroup {
 
     private int mCurrentX;//当前X轴偏移量
     private int mCurrentY;//当前Y轴偏移量
-    private int mTouchX;//触摸点的X坐标
-    private int mTouchY;//触摸点的Y坐标
+    private int mLastTouchX;//最后一次触摸的X坐标
+    private int mLastTouchY;//最后一次触摸的Y坐标
 
     private int mCurrentLeft = 0;//当前选中View的Left距离
     private int mCurrentTop = 0;//当前选中View的Top距离
@@ -715,15 +715,15 @@ public class FamilyTreeView extends ViewGroup {
             case MotionEvent.ACTION_DOWN:
 //                mCurrentX = getScrollX();
 //                mCurrentY = getScrollY();
-//                mTouchX = (int) event.getX();
-//                mTouchY = (int) event.getY();
+//                mLastTouchX = (int) event.getX();
+//                mLastTouchY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 final int currentTouchX = (int) event.getX();
                 final int currentTouchY = (int) event.getY();
 
-                final int dx = currentTouchX - mTouchX;
-                final int dy = currentTouchY - mTouchY;
+                final int dx = currentTouchX - mLastTouchX;
+                final int dy = currentTouchY - mLastTouchY;
 
                 mCurrentX -= dx;
                 mCurrentY -= dy;
@@ -741,8 +741,8 @@ public class FamilyTreeView extends ViewGroup {
 //                }
 
                 this.scrollTo(mCurrentX, mCurrentY);
-                mTouchX = currentTouchX;
-                mTouchY = currentTouchY;
+                mLastTouchX = currentTouchX;
+                mLastTouchY = currentTouchY;
                 break;
             case MotionEvent.ACTION_UP:
 
@@ -760,8 +760,8 @@ public class FamilyTreeView extends ViewGroup {
                 mLastInterceptY = (int) ev.getY();
                 mCurrentX = getScrollX();
                 mCurrentY = getScrollY();
-                mTouchX = (int) ev.getX();
-                mTouchY = (int) ev.getY();
+                mLastTouchX = (int) ev.getX();
+                mLastTouchY = (int) ev.getY();
                 intercerpt = false;
                 break;
             case MotionEvent.ACTION_MOVE:
