@@ -17,7 +17,7 @@
         android:minWidth="60dp"
         android:padding="2dp"
         android:src="@drawable/family_avatar"
-        tools:background="@drawable/ic_avatar_background" />
+        tools:background="@drawable/shape_red_circle" />
 
     <TextView
         android:id="@+id/tv_name"

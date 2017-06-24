@@ -304,6 +304,7 @@ public class FamilyTreeView extends ViewGroup {
         final View familyView = LayoutInflater.from(getContext()).inflate(R.layout.item_family, this, false);
         familyView.getLayoutParams().width = mItemWidthPX;
         familyView.getLayoutParams().height = mItemHeightPX;
+        familyView.setTag(family);
 
         final ImageView ivAvatar = (ImageView) familyView.findViewById(R.id.iv_avatar);
         ivAvatar.getLayoutParams().height = mItemWidthPX;
@@ -318,7 +319,6 @@ public class FamilyTreeView extends ViewGroup {
         tvName.setTextSize(NAME_TEXT_SIZE_SP);
         tvName.setText(family.getMemberName());
 
-        familyView.setTag(family);
         final String url = family.getMemberImg();
         if (!TextUtils.isEmpty(url)) {
             Glide.with(getContext())
@@ -331,7 +331,7 @@ public class FamilyTreeView extends ViewGroup {
                     .into(ivAvatar);
         }
         if (family.isSelect()) {
-            ivAvatar.setBackgroundResource(R.drawable.ic_avatar_background);
+            ivAvatar.setBackgroundResource(R.drawable.shape_red_circle);
         }
 
         familyView.setOnClickListener(click);
