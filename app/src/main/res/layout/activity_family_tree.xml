@@ -14,21 +14,56 @@
         android:layout_height="50dp"
         android:background="#3C3C3C"
         android:gravity="center"
-        tools:text="没有养父母"
         android:textColor="#ffffff"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="没有养父母" />
 
-    <com.cxb.familytree.ui.view.FamilyTreeView
-        android:id="@+id/ftv_tree"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_enlarge"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/shape_btn_red"
+            android:text="放大"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_shrink_down"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/shape_btn_red"
+            android:text="缩小"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff" />
+        android:orientation="vertical">
 
-    <com.cxb.familytree.ui.view.FamilyTreeView2
-        android:id="@+id/ftv_tree2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffffff"
-        android:visibility="gone" />
+        <com.cxb.familytree.ui.view.FamilyTreeView
+            android:id="@+id/ftv_tree"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff" />
+
+        <com.cxb.familytree.ui.view.FamilyTreeView2
+            android:id="@+id/ftv_tree2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </LinearLayout>

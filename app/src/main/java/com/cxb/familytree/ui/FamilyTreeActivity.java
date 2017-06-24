@@ -3,8 +3,10 @@ package com.cxb.familytree.ui;
 import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cxb.familytree.R;
 import com.cxb.familytree.db.FamilyLiteOrm;
 import com.cxb.familytree.interfaces.OnFamilySelectListener;
@@ -13,8 +15,6 @@ import com.cxb.familytree.ui.view.FamilyTreeView;
 import com.cxb.familytree.ui.view.FamilyTreeView2;
 import com.cxb.familytree.utils.AssetsUtil;
 import com.cxb.familytree.utils.ToastMaster;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -29,6 +29,8 @@ public class FamilyTreeActivity extends BaseActivity {
     private static final String MY_ID = "601";
 
     private TextView tvChangeType;
+    private Button btnEnlarge;
+    private Button btnShrinkDown;
     private FamilyTreeView ftvTree;//没有养父母
     private FamilyTreeView2 ftvTree2;//有养父母
 
@@ -63,16 +65,25 @@ public class FamilyTreeActivity extends BaseActivity {
 
     @Override
     public void onPermissionSuccess() {
-        initData();
         setData();
     }
 
-    private void initData() {
+    private void initView() {
+        tvChangeType = (TextView) findViewById(R.id.tv_change_type);
+        btnEnlarge = (Button) findViewById(R.id.btn_enlarge);
+        btnShrinkDown = (Button) findViewById(R.id.btn_shrink_down);
+        ftvTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
+        ftvTree2 = (FamilyTreeView2) findViewById(R.id.ftv_tree2);
+    }
+
+    private void setData() {
         haveFosterParent = getIntent().getBooleanExtra(HAVE_FOSTER_PARENT, false);
         if (haveFosterParent) {
             tvChangeType.setText("有养父母");
             ftvTree.setVisibility(View.GONE);
             ftvTree2.setVisibility(View.VISIBLE);
+            btnEnlarge.setVisibility(View.GONE);
+            btnShrinkDown.setVisibility(View.GONE);
         } else {
             tvChangeType.setText("没有养父母");
             ftvTree.setVisibility(View.VISIBLE);
@@ -80,23 +91,14 @@ public class FamilyTreeActivity extends BaseActivity {
         }
 
         mDatabase = new FamilyLiteOrm(this);
-
         String json = AssetsUtil.getAssetsTxtByName(this, "family_tree.txt");
-
-        Gson gson = new Gson();
-        List<FamilyMember> mList = gson.fromJson(json, new TypeToken<List<FamilyMember>>() {
-        }.getType());
+        List<FamilyMember> mList = JSONObject.parseArray(json, FamilyMember.class);
         mDatabase.deleteTable();
         mDatabase.save(mList);
-    }
 
-    private void initView() {
-        tvChangeType = (TextView) findViewById(R.id.tv_change_type);
-        ftvTree = (FamilyTreeView) findViewById(R.id.ftv_tree);
-        ftvTree2 = (FamilyTreeView2) findViewById(R.id.ftv_tree2);
-    }
+        btnEnlarge.setOnClickListener(click);
+        btnShrinkDown.setOnClickListener(click);
 
-    private void setData() {
         FamilyMember mFamilyMember = mDatabase.getFamilyTreeById(MY_ID);
         if (mFamilyMember != null) {
             if (haveFosterParent) {
@@ -124,6 +126,22 @@ public class FamilyTreeActivity extends BaseActivity {
                     } else {
                         ftvTree.setFamilyMember(currentFamily);
                     }
+                }
+            }
+        }
+    };
+
+    private View.OnClickListener click = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!haveFosterParent) {
+                switch (v.getId()) {
+                    case R.id.btn_enlarge:
+                        ftvTree.doEnlarge();
+                        break;
+                    case R.id.btn_shrink_down:
+                        ftvTree.doShrinkDown();
+                        break;
                 }
             }
         }

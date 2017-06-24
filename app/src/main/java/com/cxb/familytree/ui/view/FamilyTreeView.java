@@ -40,6 +40,8 @@ public class FamilyTreeView extends ViewGroup {
 
     private OnFamilySelectListener mOnFamilySelectListener;
 
+    private float mCurrentScale = 1f;//当前缩放比例
+
     private int mScreenWidth;//屏幕宽度PX
     private int mScreenHeight;//屏幕高度PX
     private int mScrollWidth;//移动范围
@@ -357,10 +359,10 @@ public class FamilyTreeView extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         if (mCurrentScrollX == 0 && mCurrentScrollY == 0) {
-            scrollTo((left + right - mShowWidthPX) / 2, (top + bottom - mShowHeightPX) / 2);
-        } else {
-            scrollTo(mCurrentScrollX, mCurrentScrollY);
+            mCurrentScrollX = (left + right - mShowWidthPX) / 2;
+            mCurrentScrollY = (top + bottom - mShowHeightPX) / 2;
         }
+        scrollTo(mCurrentScrollX, mCurrentScrollY);
         if (mMineView != null) {
             final int mineLeft;
             final int mineTop;
@@ -686,6 +688,22 @@ public class FamilyTreeView extends ViewGroup {
         initWidthAndHeight();
         initView();
         invalidate();
+    }
+
+    public void doEnlarge() {
+        if (mCurrentScale < 1.5f) {
+            mCurrentScale += 0.1f;
+            setScaleX(mCurrentScale);
+            setScaleY(mCurrentScale);
+        }
+    }
+
+    public void doShrinkDown() {
+        if (mCurrentScale > 1f) {
+            mCurrentScale -= 0.1f;
+            setScaleX(mCurrentScale);
+            setScaleY(mCurrentScale);
+        }
     }
 
     public void setOnFamilySelectListener(OnFamilySelectListener onFamilySelectListener) {
