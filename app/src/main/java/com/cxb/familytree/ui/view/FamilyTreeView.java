@@ -44,7 +44,6 @@ public class FamilyTreeView extends ViewGroup {
 
     private int mScreenWidth;//屏幕宽度PX
     private int mScreenHeight;//屏幕高度PX
-    private int mScrollWidth;//移动范围
 
     private int mItemWidthPX;//家庭成员View宽度PX
     private int mItemHeightPX;//家庭成员View高度PX
@@ -52,8 +51,7 @@ public class FamilyTreeView extends ViewGroup {
     private int mMaxHeightPX;//最大高度PX
     private int mSpacePX;//元素间距PX
     private int mLineWidthPX;//连线宽度PX
-    private int mLastInterceptX;
-    private int mLastInterceptY;
+
 
     private int mWidthMeasureSpec;
     private int mHeightMeasureSpec;
@@ -86,10 +84,13 @@ public class FamilyTreeView extends ViewGroup {
     private Paint mPaint;//连线样式
     private Path mPath;//路径
 
+    private int mScrollWidth;//移动范围
     private int mCurrentX;//当前X轴偏移量
     private int mCurrentY;//当前Y轴偏移量
     private int mLastTouchX;//最后一次触摸的X坐标
     private int mLastTouchY;//最后一次触摸的Y坐标
+    private int mLastInterceptX;
+    private int mLastInterceptY;
 
     private int mCurrentLeft = 0;//当前选中View的Left距离
     private int mCurrentTop = 0;//当前选中View的Top距离
@@ -746,11 +747,11 @@ public class FamilyTreeView extends ViewGroup {
                 final int currentTouchX = (int) event.getX();
                 final int currentTouchY = (int) event.getY();
 
-                final int dx = currentTouchX - mLastTouchX;
-                final int dy = currentTouchY - mLastTouchY;
+                final int distanceX = currentTouchX - mLastTouchX;
+                final int distanceY = currentTouchY - mLastTouchY;
 
-                mCurrentX -= dx;
-                mCurrentY -= dy;
+                mCurrentX -= distanceX;
+                mCurrentY -= distanceY;
 
 //                if (mCurrentX < getLeft()) {
 //                    mCurrentX = getLeft();
@@ -776,22 +777,22 @@ public class FamilyTreeView extends ViewGroup {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
+    public boolean onInterceptTouchEvent(MotionEvent event) {
         boolean intercerpt = false;
-        switch (ev.getAction()) {
+        switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mLastInterceptX = (int) ev.getX();
-                mLastInterceptY = (int) ev.getY();
+                mLastInterceptX = (int) event.getX();
+                mLastInterceptY = (int) event.getY();
                 mCurrentX = getScrollX();
                 mCurrentY = getScrollY();
-                mLastTouchX = (int) ev.getX();
-                mLastTouchY = (int) ev.getY();
+                mLastTouchX = (int) event.getX();
+                mLastTouchY = (int) event.getY();
                 intercerpt = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                final int dx = Math.abs((int) ev.getX() - mLastInterceptX);
-                final int dy = Math.abs((int) ev.getY() - mLastInterceptY);
-                if (dx < mScrollWidth && dy < mScrollWidth) {
+                final int distanceX = Math.abs((int) event.getX() - mLastInterceptX);
+                final int distanceY = Math.abs((int) event.getY() - mLastInterceptY);
+                if (distanceX < mScrollWidth && distanceY < mScrollWidth) {
                     intercerpt = false;
                 } else {
                     intercerpt = true;
