@@ -43,6 +43,17 @@
             android:textColor="#ffffff"
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/tv_new_familytree"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="20dp"
+            android:background="#3C3C3C"
+            android:gravity="center"
+            android:text="最新家谱树-开发中..."
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+
     </LinearLayout>
 
 </LinearLayout>

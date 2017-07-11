@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="com.cxb.familytree.ui.MainActivity">
+
+    <TextView
+        android:id="@+id/tv_change_type"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#3C3C3C"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
+        tools:text="没有养父母" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.cxb.familytree.ui.view.FamilyTreeView3
+            android:id="@+id/ftv_tree"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#e5e5e5" />
+
+    </LinearLayout>
+
+</LinearLayout>

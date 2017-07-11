@@ -11,6 +11,7 @@ public class MainActivity extends BaseActivity {
 
     private TextView tvNot;
     private TextView tvHave;
+    private TextView tvNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +26,13 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         tvNot = (TextView) findViewById(R.id.tv_not_foster_parent);
         tvHave = (TextView) findViewById(R.id.tv_have_foster_parent);
+        tvNew = (TextView) findViewById(R.id.tv_new_familytree);
     }
 
     private void setData() {
         tvNot.setOnClickListener(click);
         tvHave.setOnClickListener(click);
+        tvNew.setOnClickListener(click);
     }
 
     //点击监听
@@ -42,6 +45,9 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.tv_have_foster_parent:
                     startActivity(new Intent(MainActivity.this, FamilyTreeActivity.class).putExtra(FamilyTreeActivity.HAVE_FOSTER_PARENT, true));
+                    break;
+                case R.id.tv_new_familytree:
+                    startActivity(new Intent(MainActivity.this, FamilyTreeActivity3.class));
                     break;
             }
         }

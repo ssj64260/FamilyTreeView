@@ -27,6 +27,7 @@
         </activity>
 
         <activity android:name=".ui.FamilyTreeActivity" />
+        <activity android:name=".ui.FamilyTreeActivity3" />
     </application>
 
 </manifest>

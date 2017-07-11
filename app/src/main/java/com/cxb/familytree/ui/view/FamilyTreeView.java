@@ -52,7 +52,6 @@ public class FamilyTreeView extends ViewGroup {
     private int mSpacePX;//元素间距PX
     private int mLineWidthPX;//连线宽度PX
 
-
     private int mWidthMeasureSpec;
     private int mHeightMeasureSpec;
 
