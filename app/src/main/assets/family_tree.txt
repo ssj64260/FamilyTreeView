@@ -797,7 +797,7 @@
         "memberName": "维拉妹夫",
         "memberImg": "",
         "call": "小姨夫",
-        "sex": "2",
+        "sex": "1",
         "birthday": "1961-11-11",
         "spouseId": "517",
         "fatherId": "",

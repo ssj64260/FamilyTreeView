@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="50dp"
+    android:layout_height="80dp"
+    android:background="@drawable/shape_bg_male"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_male_avatar" />
+
+    <LinearLayout
+        android:id="@+id/ll_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="bottom|center_horizontal"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="#0c0c0c"
+            android:textSize="11sp"
+            tools:text="囧恩" />
+
+        <TextView
+            android:id="@+id/tv_call"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|center_horizontal"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="#0c0c0c"
+            android:textSize="9sp"
+            tools:text="配偶配偶" />
+
+    </LinearLayout>
+
+</LinearLayout>

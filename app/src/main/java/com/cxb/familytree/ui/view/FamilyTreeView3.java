@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +21,7 @@ import com.cxb.familytree.db.FamilyDBHelper;
 import com.cxb.familytree.interfaces.OnFamilyClickListener;
 import com.cxb.familytree.model.FamilyBean;
 import com.cxb.familytree.utils.DisplayUtil;
+import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +46,6 @@ public class FamilyTreeView3 extends ViewGroup {
     private int mScreenHeight;//屏幕高度PX
     private int mItemWidthPX;//家庭成员View宽度PX
     private int mItemHeightPX;//家庭成员View高度PX
-    private int mMaxWidthPX;//最大宽度PX
-    private int mMaxHeightPX;//最大高度PX
     private int mSpacePX;//元素间距PX
     private int mLineWidthPX;//连线宽度PX
 
@@ -67,10 +67,8 @@ public class FamilyTreeView3 extends ViewGroup {
     private int mLastInterceptX;
     private int mLastInterceptY;
 
-    private int mCurrentLeft = 0;//当前选中View的Left距离
-    private int mCurrentTop = 0;//当前选中View的Top距离
-    private int mCurrentScrollX = 0;//当前滚动位置
-    private int mCurrentScrollY = 0;//当前滚动位置
+    private int mCurrentWidth;//当前选中View离左边距离
+    private int mCurrentHeight;//当前选中View离顶部距离
 
     private Paint mPaint;//连线样式
     private Path mPath;//路径
@@ -85,6 +83,7 @@ public class FamilyTreeView3 extends ViewGroup {
     private List<FamilyBean> mMyFaUncleInfo;//叔伯姑
     private List<FamilyBean> mMyMoUncleInfo;//舅姨
 
+    private View mOnlyMyView;//我view
     private Pair<View, View> mMyView;//我和配偶View
     private Pair<View, View> mMyParentView;//我的父母View
     private Pair<View, View> mMyPGrandParentView;//我的爷爷奶奶View
@@ -198,7 +197,8 @@ public class FamilyTreeView3 extends ViewGroup {
         mMyFaUncleInfo.clear();
         mMyMoUncleInfo.clear();
 
-        mMyInfo = null;
+        mMyView = null;
+        mOnlyMyView = null;
         mMyParentView = null;
         mMyPGrandParentView = null;
         mMyMGrandParentView = null;
@@ -217,6 +217,7 @@ public class FamilyTreeView3 extends ViewGroup {
     private void initData(String familyId) {
         mMyInfo = mDBHelper.findFamilyById(familyId);
         if (mMyInfo != null) {
+            mMyInfo.setSelect(true);
             final String sex = mMyInfo.getSex();
             final String birthday = mMyInfo.getBirthday();
             final String fatherId = mMyInfo.getFatherId();
@@ -449,17 +450,102 @@ public class FamilyTreeView3 extends ViewGroup {
     }
 
     private void initEachLeftPart(int generation,
-                                  List<FamilyBean> infoList,
+                                  List<FamilyBean> parentinfoList,
                                   List<Pair<View, View>> parentViewList,
                                   List<Pair<View, View>> childrenViewList) {
         final int position = generation - 1;
-        //TODO
+        final int count = parentinfoList.size();
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                final FamilyBean parentInfo = parentinfoList.get(i);
+                setLeftPart(parentInfo, position, parentViewList, childrenViewList);
+            }
+        } else {
+            mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+        }
     }
 
     private void setLeftPart(FamilyBean familyInfo, int position,
                              List<Pair<View, View>> parentViewList,
                              List<Pair<View, View>> childrenViewList) {
-        //TODO
+        final FamilyBean familySpouseInfo = familyInfo.getSpouse();
+        final String familySex = familyInfo.getSex();
+        final List<FamilyBean> childList = familyInfo.getChildren();
+        final int count = childList.size();
+        final int startLeft = mGenerationLeft[position];
+
+        if (familySpouseInfo != null && count == 1) {
+            final FamilyBean childInfo = childList.get(0);
+            final String childSex = childInfo.getSex();
+            final FamilyBean childSpouseInfo = childInfo.getSpouse();
+            if (childSpouseInfo == null) {
+                final int maleLeft = mGenerationLeft[position] - mSpacePX - mItemWidthPX;
+                final int femaleLeft = mGenerationLeft[position];
+                final View maleView;
+                final View femaleView;
+                if ("1".equals(familySex)) {
+                    maleView = createFamilyView(familyInfo, maleLeft, mGenerationTop[position - 1]);
+                    femaleView = createFamilyView(familySpouseInfo, femaleLeft, mGenerationTop[position - 1]);
+                } else {
+                    maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position - 1]);
+                    femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position - 1]);
+                }
+                parentViewList.add(Pair.create(maleView, femaleView));
+
+                final int childLeft = (maleLeft + femaleLeft) / 2;
+                final View childView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
+                final View childSpouseView = null;
+                if ("1".equals(childSex)) {
+                    childrenViewList.add(Pair.create(childView, childSpouseView));
+                } else {
+                    childrenViewList.add(Pair.create(childSpouseView, childView));
+                }
+                mGenerationLeft[position] = maleLeft - mSpacePX - mItemWidthPX;
+                return;
+            }
+        }
+
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                final FamilyBean childInfo = childList.get(i);
+                final String childSex = childInfo.getSex();
+                final FamilyBean childSpouseInfo = childInfo.getSpouse();
+
+                final View childView;
+                final View childSpouseView;
+                if ("1".equals(childSex)) {
+                    childView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
+                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    if (childSpouseInfo != null) {
+                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
+                        mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    } else {
+                        childSpouseView = null;
+                    }
+                    childrenViewList.add(Pair.create(childView, childSpouseView));
+                } else {
+                    if (childSpouseInfo != null) {
+                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
+                        mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    } else {
+                        childSpouseView = null;
+                    }
+                    childView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
+                    mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+                    childrenViewList.add(Pair.create(childSpouseView, childView));
+                }
+            }
+        } else {
+            mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+            if (familySpouseInfo != null) {
+                mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
+            }
+        }
+
+        final int centerLeft = (mGenerationLeft[position] + startLeft) / 2;
+        final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
+        final int femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
+        parentViewList.add(setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
     }
 
     private void initMyPart(int generation) {
@@ -468,6 +554,11 @@ public class FamilyTreeView3 extends ViewGroup {
         final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
         final int femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
         mMyView = setParentLocate(position, centerLeft, maleLeft, femaleLeft, mMyInfo);
+        if ("1".equals(mMyInfo.getSex())) {
+            mOnlyMyView = mMyView.first;
+        } else {
+            mOnlyMyView = mMyView.second;
+        }
 
         final List<Pair<View, View>> myPairList = new ArrayList<>(1);
         myPairList.add(mMyView);
@@ -572,7 +663,7 @@ public class FamilyTreeView3 extends ViewGroup {
     }
 
     private View createFamilyView(FamilyBean family, int left, int top) {
-        final View familyView = LayoutInflater.from(getContext()).inflate(R.layout.item_family, this, false);
+        final View familyView = LayoutInflater.from(getContext()).inflate(R.layout.item_family3, this, false);
         familyView.getLayoutParams().width = mItemWidthPX;
         familyView.getLayoutParams().height = mItemHeightPX;
         familyView.setLeft(left);
@@ -582,28 +673,31 @@ public class FamilyTreeView3 extends ViewGroup {
         final ImageView ivAvatar = (ImageView) familyView.findViewById(R.id.iv_avatar);
         ivAvatar.getLayoutParams().height = mItemWidthPX;
 
-        final TextView tvCall = (TextView) familyView.findViewById(R.id.tv_call);
-        tvCall.getLayoutParams().height = (mItemHeightPX - mItemWidthPX) / 2;
-        tvCall.setTextSize(CALL_TEXT_SIZE_SP);
-        tvCall.setText("(" + family.getCall() + ")");
+        final LinearLayout llBackground = (LinearLayout) familyView.findViewById(R.id.ll_background);
 
         final TextView tvName = (TextView) familyView.findViewById(R.id.tv_name);
-        tvName.getLayoutParams().height = (mItemHeightPX - mItemWidthPX) / 2;
         tvName.setTextSize(NAME_TEXT_SIZE_SP);
         tvName.setText(family.getMemberName());
 
+        final TextView tvCall = (TextView) familyView.findViewById(R.id.tv_call);
+        tvCall.setTextSize(CALL_TEXT_SIZE_SP);
+        tvCall.setText("(" + family.getCall() + ")");
+
         final String url = family.getMemberImg();
-        if (!TextUtils.isEmpty(url)) {
-            Glide.with(getContext())
-                    .load(url)
-                    .placeholder(R.drawable.family_avatar)
-                    .error(R.drawable.family_avatar)
-                    .centerCrop()
-                    .dontAnimate()
-                    .into(ivAvatar);
-        }
+        final String sex = family.getSex();
+        Glide.with(getContext())
+                .load(url)
+                .placeholder("2".equals(sex) ? R.drawable.ic_female_avatar : R.drawable.ic_male_avatar)
+                .error("2".equals(sex) ? R.drawable.ic_female_avatar : R.drawable.ic_male_avatar)
+                .centerCrop()
+                .dontAnimate()
+                .into(ivAvatar);
         if (family.isSelect()) {
-            ivAvatar.setBackgroundResource(R.drawable.shape_red_circle);
+            familyView.setBackgroundResource(R.drawable.shape_bg_select);
+            llBackground.setBackgroundResource("2".equals(sex) ? R.color.red_middle : R.color.green_middle);
+        } else {
+            familyView.setBackgroundResource("2".equals(sex) ? R.drawable.shape_bg_female : R.drawable.shape_bg_male);
+            llBackground.setBackgroundResource(R.color.transparent);
         }
 
         familyView.setOnClickListener(click);
@@ -633,6 +727,13 @@ public class FamilyTreeView3 extends ViewGroup {
             final View childView = getChildAt(i);
             setChildViewFrame(childView, childView.getLeft(), childView.getTop(), mItemWidthPX, mItemHeightPX);
         }
+
+        if (mCurrentWidth == 0 && mCurrentHeight == 0) {
+            mCurrentWidth = (mShowWidthPX - mItemWidthPX) / 2;
+            mCurrentHeight = (mShowHeightPX - mItemHeightPX) / 2;
+        }
+
+        scrollTo(mOnlyMyView.getLeft() - mCurrentWidth, mOnlyMyView.getTop() - mCurrentHeight);
     }
 
     private void setChildViewFrame(View childView, int left, int top, int width, int height) {
@@ -712,10 +813,8 @@ public class FamilyTreeView3 extends ViewGroup {
         @Override
         public void onClick(View v) {
             if (mOnFamilyClickListener != null) {
-                mCurrentLeft = v.getLeft();
-                mCurrentTop = v.getTop();
-                mCurrentScrollX = getScrollX();
-                mCurrentScrollY = getScrollY();
+                mCurrentWidth = v.getLeft() - getScrollX();
+                mCurrentHeight = v.getTop() - getScrollY();
                 mOnFamilyClickListener.onFamilySelect((FamilyBean) v.getTag());
             }
         }
@@ -745,7 +844,7 @@ public class FamilyTreeView3 extends ViewGroup {
                 mLastTouchY = currentTouchY;
                 break;
             case MotionEvent.ACTION_UP:
-
+                Logger.d("scrollX = " + getScrollX() + "\nscrollY = " + getScrollY());
                 break;
         }
         return true;
