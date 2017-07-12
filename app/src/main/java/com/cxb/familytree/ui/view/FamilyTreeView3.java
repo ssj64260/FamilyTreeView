@@ -338,7 +338,7 @@ public class FamilyTreeView3 extends ViewGroup {
 
         initEachRightPart(4, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
         setRightByGeneration(3, mMyLittleBrotherView);
-        initEachLeftPart(4, mMyBrotherInfo, mMyBrotherView, mMyLittleBroChildrenView);
+        initEachLeftPart(4, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
         setLeftByGeneration(3, mMyBrotherView);
 
         initMyParentPart(2);
@@ -412,29 +412,28 @@ public class FamilyTreeView3 extends ViewGroup {
                 final String childSex = childInfo.getSex();
                 final FamilyBean childSpouseInfo = childInfo.getSpouse();
 
-                final View childView;
-                final View childSpouseView;
+                final View maleView;
+                final View femaleView;
                 if ("1".equals(childSex)) {
-                    childView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
+                    maleView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
                     mGenerationRight[position] += mItemWidthPX + mSpacePX;
                     if (childSpouseInfo != null) {
-                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
+                        femaleView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
                         mGenerationRight[position] += mItemWidthPX + mSpacePX;
                     } else {
-                        childSpouseView = null;
+                        femaleView = null;
                     }
-                    childrenViewList.add(Pair.create(childView, childSpouseView));
                 } else {
                     if (childSpouseInfo != null) {
-                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
+                        maleView = createFamilyView(childSpouseInfo, mGenerationRight[position], mGenerationTop[position]);
                         mGenerationRight[position] += mItemWidthPX + mSpacePX;
                     } else {
-                        childSpouseView = null;
+                        maleView = null;
                     }
-                    childView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
+                    femaleView = createFamilyView(childInfo, mGenerationRight[position], mGenerationTop[position]);
                     mGenerationRight[position] += mItemWidthPX + mSpacePX;
-                    childrenViewList.add(Pair.create(childSpouseView, childView));
                 }
+                childrenViewList.add(Pair.create(maleView, femaleView));
             }
         } else {
             mGenerationRight[position] += mItemWidthPX + mSpacePX;
@@ -456,7 +455,7 @@ public class FamilyTreeView3 extends ViewGroup {
         final int position = generation - 1;
         final int count = parentinfoList.size();
         if (count > 0) {
-            for (int i = 0; i < count; i++) {
+            for (int i = count - 1; i >= 0; i--) {
                 final FamilyBean parentInfo = parentinfoList.get(i);
                 setLeftPart(parentInfo, position, parentViewList, childrenViewList);
             }
@@ -490,15 +489,15 @@ public class FamilyTreeView3 extends ViewGroup {
                     maleView = createFamilyView(familySpouseInfo, maleLeft, mGenerationTop[position - 1]);
                     femaleView = createFamilyView(familyInfo, femaleLeft, mGenerationTop[position - 1]);
                 }
-                parentViewList.add(Pair.create(maleView, femaleView));
+                parentViewList.add(0, Pair.create(maleView, femaleView));
 
                 final int childLeft = (maleLeft + femaleLeft) / 2;
                 final View childView = createFamilyView(childInfo, childLeft, mGenerationTop[position]);
                 final View childSpouseView = null;
                 if ("1".equals(childSex)) {
-                    childrenViewList.add(Pair.create(childView, childSpouseView));
+                    childrenViewList.add(0, Pair.create(childView, childSpouseView));
                 } else {
-                    childrenViewList.add(Pair.create(childSpouseView, childView));
+                    childrenViewList.add(0, Pair.create(childSpouseView, childView));
                 }
                 mGenerationLeft[position] = maleLeft - mSpacePX - mItemWidthPX;
                 return;
@@ -506,34 +505,33 @@ public class FamilyTreeView3 extends ViewGroup {
         }
 
         if (count > 0) {
-            for (int i = 0; i < count; i++) {
+            for (int i = count - 1; i >= 0; i--) {
                 final FamilyBean childInfo = childList.get(i);
                 final String childSex = childInfo.getSex();
                 final FamilyBean childSpouseInfo = childInfo.getSpouse();
 
-                final View childView;
-                final View childSpouseView;
+                final View maleView;
+                final View femaleView;
                 if ("1".equals(childSex)) {
-                    childView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
+                    maleView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
                     mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
                     if (childSpouseInfo != null) {
-                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
+                        femaleView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
                         mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
                     } else {
-                        childSpouseView = null;
+                        femaleView = null;
                     }
-                    childrenViewList.add(Pair.create(childView, childSpouseView));
                 } else {
                     if (childSpouseInfo != null) {
-                        childSpouseView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
+                        maleView = createFamilyView(childSpouseInfo, mGenerationLeft[position], mGenerationTop[position]);
                         mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
                     } else {
-                        childSpouseView = null;
+                        maleView = null;
                     }
-                    childView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
+                    femaleView = createFamilyView(childInfo, mGenerationLeft[position], mGenerationTop[position]);
                     mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
-                    childrenViewList.add(Pair.create(childSpouseView, childView));
                 }
+                childrenViewList.add(0, Pair.create(maleView, femaleView));
             }
         } else {
             mGenerationLeft[position] -= (mItemWidthPX + mSpacePX);
@@ -542,10 +540,10 @@ public class FamilyTreeView3 extends ViewGroup {
             }
         }
 
-        final int centerLeft = (mGenerationLeft[position] + startLeft) / 2;
+        final int centerLeft = (startLeft + mGenerationLeft[position] + mItemWidthPX + mSpacePX) / 2;
         final int maleLeft = centerLeft - (mItemWidthPX + mSpacePX) / 2;
         final int femaleLeft = centerLeft + (mItemWidthPX + mSpacePX) / 2;
-        parentViewList.add(setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
+        parentViewList.add(0, setParentLocate(position - 1, centerLeft, maleLeft, femaleLeft, familyInfo));
     }
 
     private void initMyPart(int generation) {
@@ -743,66 +741,184 @@ public class FamilyTreeView3 extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
 //        super.onDraw(canvas);
-//        testDrawChildrenLine4(canvas, mMyChildrenView);
-//        testDrawChildrenLine5(canvas, mMyGrandChildrenView);
+        drawPart(canvas, mMyChildrenInfo, mMyChildrenView, mMyGrandChildrenView);
+        drawPart(canvas, mMyLittleBrotherInfo, mMyLittleBrotherView, mMyLittleBroChildrenView);
+        drawPart(canvas, mMyBrotherInfo, mMyBrotherView, mMyBroChildrenView);
+        drawPart(canvas, mMyMoUncleInfo, mMyMoUncleView, mMyMoUncleChildrenView);
+        drawPart(canvas, mMyFaUncleInfo, mMyFaUncleView, mMyFaUncleChildrenView);
+        drawIndependentViewLine(canvas, mMyInfo, mMyView, 3);
+        drawIndependentViewLine(canvas, mMyParentInfo, mMyParentView, 2);
+        drawIndependentViewLine(canvas, mMyPGrandParentInfo, mMyPGrandParentView, 1);
+        drawIndependentViewLine(canvas, mMyMGrandParentInfo, mMyMGrandParentView, 1);
+
     }
 
-    private void testDrawChildrenLine4(Canvas canvas) {
+    private void drawPart(Canvas canvas,
+                          List<FamilyBean> parentInfoList,
+                          List<Pair<View, View>> parentViewList,
+                          List<Pair<View, View>> childrenViewList) {
+        int childIndex = 0;
+        final int parentCount = parentInfoList.size();
+        for (int i = 0; i < parentCount; i++) {
+            final FamilyBean parentInfo = parentInfoList.get(i);
+            final Pair<View, View> parentPair = parentViewList.get(i);
+            final List<FamilyBean> childrenInfoList = parentInfo.getChildren();
+            final int childrenCount = childrenInfoList.size();
+            final int centerX = drawViewLine(canvas, parentInfo, parentPair);
+
+            for (int j = 0; j < childrenCount; j++, childIndex++) {
+                final FamilyBean childInfo = childrenInfoList.get(j);
+                final Pair<View, View> childPair = childrenViewList.get(childIndex);
+                drawViewLine(canvas, childInfo, childPair);
+
+                if (j == 0 || j == childrenCount - 1) {
+                    final String childSex = childInfo.getSex();
+                    final View childView;
+                    if ("1".equals(childSex)) {
+                        childView = childPair.first;
+                    } else {
+                        childView = childPair.second;
+                    }
+                    final int horizontalY = childView.getTop() - mSpacePX / 2;
+                    final int horizontalStartX = childView.getLeft() + mItemWidthPX / 2;
+                    drawLine(canvas, horizontalStartX, centerX, horizontalY, horizontalY);
+                }
+            }
+        }
 
     }
 
-    private void testDrawChildrenLine5(Canvas canvas, List<Pair<View, View>> pairList) {
-        final int count = mMyChildrenInfo.size();
-        for (int i = 0; i < count; i++) {
-            final Pair<View, View> pair = pairList.get(i);
-            final FamilyBean familyInfo = mMyChildrenInfo.get(i);
-            final String familySex = familyInfo.getSex();
-            final View view;
-            if ("1".equals(familySex)) {
-                view = pair.first;
+    private int drawViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair) {
+        int centerX = 0;
+        final String familySex = familyInfo.getSex();
+        final String fatherId = familyInfo.getFatherId();
+        final String motherId = familyInfo.getMotherId();
+        final List<FamilyBean> childrenList = familyInfo.getChildren();
+        final View familyView;
+        final View familySpouseView;
+        if ("1".equals(familySex)) {
+            familyView = familyPair.first;
+            familySpouseView = familyPair.second;
+        } else {
+            familyView = familyPair.second;
+            familySpouseView = familyPair.first;
+        }
+        if (familyView != null && familySpouseView != null) {
+            final int horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
+            final int horizontalEndX = familySpouseView.getLeft() + mItemWidthPX / 2;
+            final int horizontalY = familyView.getTop() + mItemHeightPX / 2;
+            drawLine(canvas, horizontalStartX, horizontalEndX, horizontalY, horizontalY);
+            if (childrenList != null && childrenList.size() > 0) {
+                final int verticalX = (horizontalEndX + horizontalStartX) / 2;
+                final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+                drawLine(canvas, verticalX, verticalX, horizontalY, vertiaclEndY);
+                centerX = verticalX;
+            }
+        } else {
+            if (familyView != null && childrenList != null && childrenList.size() > 0) {
+                final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
+                final int verticalStartY = familyView.getTop() + mItemHeightPX / 2;
+                final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+                drawLine(canvas, verticalX, verticalX, verticalStartY, vertiaclEndY);
+                centerX = verticalX;
+            }
+        }
+        if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
+            final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
+            final int verticalStartY = familyView.getTop();
+            final int verticalEndY = verticalStartY - mSpacePX / 2;
+            drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
+        }
+        return centerX;
+    }
+
+    private void drawIndependentViewLine(Canvas canvas, FamilyBean familyInfo, Pair<View, View> familyPair, int generation) {
+        if (familyInfo != null) {
+            final boolean haveTopLine;
+            final boolean haveSpoueTopLine;
+            if (generation == 1) {
+                haveTopLine = false;
+                haveSpoueTopLine = false;
+            } else if (generation == 2) {
+                haveTopLine = true;
+                haveSpoueTopLine = true;
+            } else if (generation == 3) {
+                haveTopLine = true;
+                haveSpoueTopLine = false;
             } else {
-                view = pair.second;
+                return;
             }
-
-            final int verticalLineStartY = view.getTop() + mItemHeightPX / 2;
-            final int verticalLineEndY = view.getTop() - mSpacePX / 2;
-            final int verticalLineX = view.getLeft() + mItemWidthPX / 2;
-            mPath.reset();
-            mPath.moveTo(verticalLineX, verticalLineStartY);
-            mPath.lineTo(verticalLineX, verticalLineEndY);
-            canvas.drawPath(mPath, mPaint);
-        }
-        for (Pair<View, View> pair : pairList) {
-            final View firstView = pair.first;
-            final View scondView = pair.second;
-            if (firstView != null && scondView != null) {
-                final int horizontalLineY = firstView.getTop() + mItemHeightPX / 2;
-                final int horizontalLineStartX = firstView.getLeft() + mItemWidthPX / 2;
-                final int horizontalLineEndX = scondView.getLeft() + mItemWidthPX / 2;
-
-                mPath.reset();
-                mPath.moveTo(horizontalLineStartX, horizontalLineY);
-                mPath.lineTo(horizontalLineEndX, horizontalLineY);
-                canvas.drawPath(mPath, mPaint);
+            final String familySex = familyInfo.getSex();
+            final String fatherId = familyInfo.getFatherId();
+            final String motherId = familyInfo.getMotherId();
+            final FamilyBean spouseInfo = familyInfo.getSpouse();
+            final View familyView;
+            final View familySpouseView;
+            if ("1".equals(familySex)) {
+                familyView = familyPair.first;
+                familySpouseView = familyPair.second;
+            } else {
+                familyView = familyPair.second;
+                familySpouseView = familyPair.first;
+            }
+            if (familyView != null && familySpouseView != null) {
+                final int horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
+                final int horizontalEndX = familySpouseView.getLeft() + mItemWidthPX / 2;
+                final int horizontalY = familyView.getTop() + mItemHeightPX / 2;
+                drawLine(canvas, horizontalStartX, horizontalEndX, horizontalY, horizontalY);
+                final int verticalX = (horizontalEndX + horizontalStartX) / 2;
+                final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+                drawLine(canvas, verticalX, verticalX, horizontalY, vertiaclEndY);
+            } else {
+                if (familyView != null) {
+                    final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
+                    final int verticalStartY = familyView.getTop() + mItemHeightPX / 2;
+                    final int vertiaclEndY = familyView.getTop() + mItemHeightPX + mSpacePX / 2;
+                    drawLine(canvas, verticalX, verticalX, verticalStartY, vertiaclEndY);
+                }
+            }
+            if (haveTopLine) {
+                if (familyView != null && (!TextUtils.isEmpty(fatherId) || !TextUtils.isEmpty(motherId))) {
+                    final int verticalX = familyView.getLeft() + mItemWidthPX / 2;
+                    final int verticalStartY = familyView.getTop();
+                    final int verticalEndY = verticalStartY - mSpacePX / 2;
+                    drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
+                    if (generation == 2) {
+                        final int horizontalStartX;
+                        if (!TextUtils.isEmpty(fatherId) && !TextUtils.isEmpty(motherId)) {
+                            horizontalStartX = familyView.getLeft() - mSpacePX / 2;
+                        } else {
+                            horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
+                        }
+                        drawLine(canvas, horizontalStartX, verticalX, verticalEndY, verticalEndY);
+                    }
+                }
+                if (haveSpoueTopLine && spouseInfo != null && familySpouseView != null) {
+                    final String spouseFatherId = spouseInfo.getFatherId();
+                    final String spouseMotherId = spouseInfo.getMotherId();
+                    if (!TextUtils.isEmpty(spouseFatherId) || !TextUtils.isEmpty(spouseMotherId)) {
+                        final int verticalX = familySpouseView.getLeft() + mItemWidthPX / 2;
+                        final int verticalStartY = familySpouseView.getTop();
+                        final int verticalEndY = verticalStartY - mSpacePX / 2;
+                        drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
+                        final int horizontalStartX;
+                        if (!TextUtils.isEmpty(spouseFatherId) && !TextUtils.isEmpty(spouseMotherId)) {
+                            horizontalStartX = familySpouseView.getLeft() + mItemWidthPX + mSpacePX / 2;
+                        } else {
+                            horizontalStartX = familySpouseView.getLeft() + mItemWidthPX / 2;
+                        }
+                        drawLine(canvas, horizontalStartX, verticalX, verticalEndY, verticalEndY);
+                    }
+                }
             }
         }
     }
 
-    private void testDrawChildrenLine4(Canvas canvas, List<Pair<View, View>> pairList) {
-        for (Pair<View, View> pair : pairList) {
-            final View firstView = pair.first;
-            final View scondView = pair.second;
-            if (firstView != null && scondView != null) {
-                final int horizontalLineY = firstView.getTop() + mItemHeightPX / 2;
-                final int horizontalLineStartX = firstView.getLeft() + mItemWidthPX / 2;
-                final int horizontalLineEndX = scondView.getLeft() + mItemWidthPX / 2;
-
-                mPath.reset();
-                mPath.moveTo(horizontalLineStartX, horizontalLineY);
-                mPath.lineTo(horizontalLineEndX, horizontalLineY);
-                canvas.drawPath(mPath, mPaint);
-            }
-        }
+    private void drawLine(Canvas canvas, int startX, int endX, int startY, int endY) {
+        mPath.reset();
+        mPath.moveTo(startX, startY);
+        mPath.lineTo(endX, endY);
+        canvas.drawPath(mPath, mPaint);
     }
 
     public void setOnFamilyClickListener(OnFamilyClickListener onFamilyClickListener) {
