@@ -50,7 +50,7 @@
             android:layout_margin="20dp"
             android:background="#3C3C3C"
             android:gravity="center"
-            android:text="最新家谱树-开发中..."
+            android:text="仿 ”亲友+“App 的家谱"
             android:textColor="#ffffff"
             android:textSize="16sp" />
 
