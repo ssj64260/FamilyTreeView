@@ -27,7 +27,7 @@
             android:id="@+id/ftv_tree"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#e5e5e5" />
+            android:background="#F1F1F1" />
 
     </LinearLayout>
 

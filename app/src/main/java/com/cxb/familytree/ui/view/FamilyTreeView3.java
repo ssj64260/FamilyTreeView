@@ -37,7 +37,7 @@ public class FamilyTreeView3 extends ViewGroup {
     private static final int ITEM_HEIGHT_DP = 80;//家庭成员View高度80dp
     private static final float CALL_TEXT_SIZE_SP = 9f;//称呼文字大小9sp
     private static final float NAME_TEXT_SIZE_SP = 11f;//名称文字大小11sp
-    private static final int LINE_WIDTH_DP = 2;//连线宽度2dp
+    private static final int LINE_WIDTH_DP = 1;//连线宽度2dp
     private static final int SCROLL_WIDTH = 2;//移动超过2dp，响应滑动，否则属于点击
     private static final String SEX_MEAL = "1";//1为男性
 
@@ -135,7 +135,7 @@ public class FamilyTreeView3 extends ViewGroup {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.reset();
-        mPaint.setColor(0xFF888888);
+        mPaint.setColor(0xFFBBBBBB);
         mPaint.setStrokeWidth(mLineWidthPX);
         mPaint.setStyle(Paint.Style.STROKE);
 
@@ -769,13 +769,13 @@ public class FamilyTreeView3 extends ViewGroup {
         drawOtherLine(canvas, mMyBrotherInfo, mMyBrotherView, mParentX);
         if (mMyParentView != null) {
             final View fatherView = mMyParentView.first;
-            if (fatherView != null) {
+            if (fatherView != null && mMyPGrandParentView != null) {
                 final int horizontalY = fatherView.getTop() - mSpacePX / 2;
                 final int horizontalStartX = fatherView.getLeft() + mItemWidthPX / 2;
                 drawLine(canvas, horizontalStartX, mPGrandParentX, horizontalY, horizontalY);
             }
             final View motherView = mMyParentView.second;
-            if (motherView != null) {
+            if (motherView != null && mMyMGrandParentView != null) {
                 final int horizontalY = motherView.getTop() - mSpacePX / 2;
                 final int horizontalStartX = motherView.getLeft() + mItemWidthPX / 2;
                 drawLine(canvas, horizontalStartX, mMGrandParentX, horizontalY, horizontalY);

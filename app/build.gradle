@@ -17,6 +17,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    //自定义APK打包名称
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def appName = 'FamilyTree'
+            def buildType = buildType.name
+            def version = defaultConfig.versionName
+            def build = defaultConfig.versionCode
+            output.outputFile = new File(output.outputFile.parent, appName + "-" + buildType + "-V" + version + "-Build" + build + ".apk");
+        }
+    }
 }
 
 dependencies {
