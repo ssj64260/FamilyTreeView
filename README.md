@@ -60,7 +60,7 @@
 #### 1、首先通过assets获取Json
 #### 2、将Json转成对象列表
 #### 3、将对象列表存进数据库
-#### 4、将选中的加入的ID传入控件里，控件会查询数据库拼装带关系的model对象，然后通过对象绘制关系图
+#### 4、将选中的家庭成员的ID传入控件里，控件会查询数据库拼装带关系的model对象，然后通过对象绘制关系图
 ![对象](https://raw.githubusercontent.com/ssj64260/FamilyTreeView/master/image/%E4%BB%BF%E4%BA%B2%E5%8F%8B%2BModel.png)
 
 ## 预览图，这里就放一张意思意思，因为关系图太庞大，具体效果自己运行App体验吧
