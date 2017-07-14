@@ -923,15 +923,6 @@ public class FamilyTreeView3 extends ViewGroup {
                     final int verticalStartY = familyView.getTop();
                     final int verticalEndY = verticalStartY - mSpacePX / 2;
                     drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
-//                    if (generation == 2) {
-//                        final int horizontalStartX;
-//                        if (!TextUtils.isEmpty(fatherId) && !TextUtils.isEmpty(motherId)) {
-//                            horizontalStartX = familyView.getLeft() - mSpacePX / 2;
-//                        } else {
-//                            horizontalStartX = familyView.getLeft() + mItemWidthPX / 2;
-//                        }
-//                        drawLine(canvas, horizontalStartX, verticalX, verticalEndY, verticalEndY);
-//                    }
                 }
                 if (haveSpoueTopLine && spouseInfo != null && familySpouseView != null) {
                     final String spouseFatherId = spouseInfo.getFatherId();
@@ -941,13 +932,6 @@ public class FamilyTreeView3 extends ViewGroup {
                         final int verticalStartY = familySpouseView.getTop();
                         final int verticalEndY = verticalStartY - mSpacePX / 2;
                         drawLine(canvas, verticalX, verticalX, verticalStartY, verticalEndY);
-//                        final int horizontalStartX;
-//                        if (!TextUtils.isEmpty(spouseFatherId) && !TextUtils.isEmpty(spouseMotherId)) {
-//                            horizontalStartX = familySpouseView.getLeft() + mItemWidthPX + mSpacePX / 2;
-//                        } else {
-//                            horizontalStartX = familySpouseView.getLeft() + mItemWidthPX / 2;
-//                        }
-//                        drawLine(canvas, horizontalStartX, verticalX, verticalEndY, verticalEndY);
                     }
                 }
             }
@@ -1005,6 +989,12 @@ public class FamilyTreeView3 extends ViewGroup {
 
     public void setmBottomNeedSpouse(boolean mBottomNeedSpouse) {
         this.mBottomNeedSpouse = mBottomNeedSpouse;
+        mCurrentWidth = (mShowWidthPX - mItemWidthPX) / 2;
+        mCurrentHeight = (mShowHeightPX - mItemHeightPX) / 2;
+    }
+
+    public boolean ismBottomNeedSpouse() {
+        return mBottomNeedSpouse;
     }
 
     private OnClickListener click = new OnClickListener() {
