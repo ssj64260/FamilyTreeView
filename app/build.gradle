@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.cxb.familytree"
         minSdkVersion 21
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,28 +20,33 @@ android {
 
     //自定义APK打包名称
     applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            def appName = 'FamilyTree'
-            def buildType = buildType.name
-            def version = defaultConfig.versionName
-            def build = defaultConfig.versionCode
-            output.outputFile = new File(output.outputFile.parent, appName + "-" + buildType + "-V" + version + "-Build" + build + ".apk");
+        variant.outputs.all {
+            if (outputFileName.endsWith('.apk')) {
+                def appName = 'FamilyTree_'
+                def buildType = buildType.name
+                def version = defaultConfig.versionName
+                def build = defaultConfig.versionCode
+                outputFileName = appName + version + "_build" + build + "_" + buildType + ".apk"
+            }
         }
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    androidTestImplementation('com.android.support.constraint:constraint-layout:2.0.0-alpha1', {
+        exclude group: 'com.android.support'
+    })
 
-    compile files('libs/lite-orm-1.9.2.jar')
-    compile 'com.alibaba:fastjson:1.2.33'
-    compile 'com.orhanobut:logger:1.15'
-    compile 'com.github.bumptech.glide:glide:3.8.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+
+    implementation files('libs/lite-orm-1.9.2.jar')
+    implementation 'com.alibaba:fastjson:1.2.33'
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
 }

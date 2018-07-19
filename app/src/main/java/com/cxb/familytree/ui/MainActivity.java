@@ -47,7 +47,7 @@ public class MainActivity extends BaseActivity {
                     startActivity(new Intent(MainActivity.this, FamilyTreeActivity.class).putExtra(FamilyTreeActivity.HAVE_FOSTER_PARENT, true));
                     break;
                 case R.id.tv_new_familytree:
-                    startActivity(new Intent(MainActivity.this, FamilyTreeActivity3.class));
+                    startActivity(new Intent(MainActivity.this, NewFamilyTreeActivity.class));
                     break;
             }
         }

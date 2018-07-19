@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.cxb.familytree.ui.view.FamilyTreeView3
+        <com.cxb.familytree.ui.view.NewFamilyTreeView
             android:id="@+id/ftv_tree"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

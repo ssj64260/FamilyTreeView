@@ -4,10 +4,12 @@ import android.Manifest;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cxb.familytree.MyApplication;
 import com.cxb.familytree.R;
+import com.cxb.familytree.db.FamilyDBHelper;
 import com.cxb.familytree.interfaces.OnFamilyClickListener;
 import com.cxb.familytree.model.FamilyBean;
-import com.cxb.familytree.ui.view.FamilyTreeView3;
+import com.cxb.familytree.ui.view.NewFamilyTreeView;
 import com.cxb.familytree.utils.AssetsUtil;
 import com.cxb.familytree.utils.ToastMaster;
 
@@ -17,16 +19,16 @@ import java.util.List;
  * 仿亲友+
  */
 
-public class FamilyTreeActivity3 extends BaseActivity {
+public class NewFamilyTreeActivity extends BaseActivity {
 
     private static final String MY_ID = "601";
 
-    private FamilyTreeView3 ftvTree;//没有养父母
+    private NewFamilyTreeView ftvTree;//没有养父母
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_family_tree3);
+        setContentView(R.layout.activity_new_family_tree);
 
         initView();
 
@@ -53,15 +55,20 @@ public class FamilyTreeActivity3 extends BaseActivity {
     }
 
     private void initView() {
-        ftvTree = (FamilyTreeView3) findViewById(R.id.ftv_tree);
+        ftvTree = findViewById(R.id.ftv_tree);
     }
 
     private void setData() {
         String json = AssetsUtil.getAssetsTxtByName(this, "family_tree.txt");
         List<FamilyBean> mList = JSONObject.parseArray(json, FamilyBean.class);
 
-        ftvTree.saveData(mList);
-        ftvTree.drawFamilyTree(MY_ID);
+        final FamilyDBHelper dbHelper = new FamilyDBHelper(MyApplication.getInstance());
+        dbHelper.save(mList);
+        final FamilyBean my = dbHelper.findFamilyById(MY_ID);
+        dbHelper.closeDB();
+
+        ftvTree.setShowBottomSpouse(false);
+        ftvTree.drawFamilyTree(my);
         ftvTree.setOnFamilyClickListener(familyClick);
     }
 
@@ -71,8 +78,7 @@ public class FamilyTreeActivity3 extends BaseActivity {
             if (family.isSelect()) {
                 ToastMaster.toast(family.getMemberName());
             } else {
-                String currentFamilyId = family.getMemberId();
-                ftvTree.drawFamilyTree(currentFamilyId);
+                ftvTree.drawFamilyTree(family);
             }
         }
     };
